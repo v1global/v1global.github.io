@@ -142,35 +142,40 @@
 
     <div class="copy-confirm" id="confirm">copied</div>
 
-<a class="send-btn" href="https://phantom.app/ul/v1/send?recipient=D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3"
-   onclick="copyWallet()">
-  CONTRIBUTE
-</a>
+    <a class="send-btn" href="#" onclick="copyAndOpenPhantom()">CONTRIBUTE</a>
   </main>
 
   <footer>solana network</footer>
 
   <script>
-    function copyWallet() {
-      const text = 'D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3';
+    const address = 'D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3';
 
+    function copyWallet() {
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(showConfirm);
+        navigator.clipboard.writeText(address).then(showConfirm);
       } else {
         const textarea = document.createElement("textarea");
-        textarea.value = text;
+        textarea.value = address;
         document.body.appendChild(textarea);
         textarea.select();
         document.execCommand("copy");
         document.body.removeChild(textarea);
         showConfirm();
       }
+    }
 
-      function showConfirm() {
-        const el = document.getElementById('confirm');
-        el.classList.add('visible');
-        setTimeout(() => el.classList.remove('visible'), 2000);
-      }
+    function copyAndOpenPhantom() {
+      copyWallet();
+      // Small timeout ensures copy works before opening Phantom
+      setTimeout(() => {
+        window.location.href = 'https://phantom.app/ul/v1/send?recipient=' + address;
+      }, 50);
+    }
+
+    function showConfirm() {
+      const el = document.getElementById('confirm');
+      el.classList.add('visible');
+      setTimeout(() => el.classList.remove('visible'), 2000);
     }
   </script>
 
