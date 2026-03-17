@@ -16,9 +16,10 @@
 
     html, body {
       height: 100%;
-      background: #000;
-      color: #fff;
+      background: #fff;
+      color: #000;
       font-family: 'DM Mono', monospace;
+      overflow: hidden;
     }
 
     main {
@@ -30,6 +31,44 @@
       gap: 1.2rem;
       padding: 2rem;
       position: relative;
+      z-index: 2;
+    }
+
+    / cosmic background spark /
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.06), transparent 60%);
+      animation: drift 12s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes drift {
+      0%,100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.2); opacity: 0.9; }
+    }
+
+    / big X presence */
+    .x-mark {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20vw;
+      font-family: 'Bebas Neue', sans-serif;
+      color: rgba(0,0,0,0.04);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .affirmation {
+      position: fixed;
+      top: 1.5rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      opacity: 0.7;
     }
 
     .name {
@@ -37,24 +76,13 @@
       font-size: clamp(3.5rem, 14vw, 8rem);
       letter-spacing: 0.05em;
       text-align: center;
-      position: relative;
-    }
-
-    / subtle glow /
-    .name::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
-      opacity: 0.6;
-      pointer-events: none;
     }
 
     .wallet-wrap {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      border: 1px solid #222;
+      border: 1px solid #ccc;
       padding: 0.8rem 1.1rem;
       cursor: pointer;
       transition: all 0.25s ease;
@@ -63,7 +91,7 @@
     }
 
     .wallet-wrap:hover {
-      border-color: #fff;
+      border-color: #000;
       transform: scale(1.01);
     }
 
@@ -71,29 +99,29 @@
       font-size: clamp(0.65rem, 2vw, 0.8rem);
       letter-spacing: 0.05em;
       word-break: break-all;
-      color: #888;
+      color: #333;
       user-select: all;
       transition: color 0.2s;
     }
 
     .wallet-wrap:hover .wallet-address {
-      color: #fff;
+      color: #000;
     }
 
     .copy-icon {
       flex-shrink: 0;
-      color: #444;
+      color: #666;
       transition: color 0.2s;
     }
 
     .wallet-wrap:hover .copy-icon {
-      color: #fff;
+      color: #000;
     }
 
     .copy-confirm {
-      font-size: 0.55rem;
+      font-size: 0.6rem;
       letter-spacing: 0.3em;
-      color: #555;
+      color: #000;
       text-transform: uppercase;
       height: 1rem;
       opacity: 0;
@@ -108,9 +136,9 @@
       font-family: 'Bebas Neue', sans-serif;
       font-size: 0.9rem;
       letter-spacing: 0.35em;
-      color: #fff;
+      color: #000;
       background: transparent;
-      border: 1px solid #333;
+      border: 1px solid #000;
       padding: 0.7rem 2.5rem;
       cursor: pointer;
       text-decoration: none;
@@ -118,19 +146,9 @@
     }
 
     .send-btn:hover {
-      border-color: #fff;
-      letter-spacing: 0.45em;
-    }
-
-    / subtle pulse animation /
-    @keyframes pulse {
-      0% { opacity: 0.6; }
-      50% { opacity: 1; }
-      100% { opacity: 0.6; }
-    }
-
-    .send-btn {
-      animation: pulse 4s infinite;
+      letter-spacing: 0.5em;
+      background: #000;
+      color: #fff;
     }
 
     footer {
@@ -138,22 +156,11 @@
       bottom: 1.2rem;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 0.5rem;
+      font-size: 0.55rem;
       letter-spacing: 0.3em;
-      color: #222;
+      color: #000;
+      opacity: 0.6;
       text-transform: uppercase;
-    }
-
-    / optional X mark */
-    .x-mark {
-      position: fixed;
-      top: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.7rem;
-      letter-spacing: 0.5em;
-      color: #222;
-      pointer-events: none;
     }
 
   </style>
@@ -162,6 +169,7 @@
 <body>
 
   <div class="x-mark">X</div>
+  <div class="affirmation">signal received</div>
 
   <main>
     <div class="name">V1 | THE ONE</div>
@@ -183,7 +191,7 @@
     </a>
   </main>
 
-  <footer>YOU ARE GOD</footer>
+  <footer>solana network</footer>
 
   <script>
     function copyWallet() {
