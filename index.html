@@ -16,8 +16,8 @@
 
     html, body {
       height: 100%;
-      background: #000;
-      color: #fff;
+      background: #ffffff;
+      color: #0a0a0a;
       font-family: 'DM Mono', monospace;
       font-weight: 300;
     }
@@ -38,30 +38,33 @@
       letter-spacing: 0.05em;
       line-height: 1;
       text-align: center;
+      color: #0a0a0a;
     }
 
     .send-btn {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 1rem;
       letter-spacing: 0.3em;
-      color: #000;
-      background: #fff;
-      border: none;
+      color: #ffffff;
+      background: #ff6a00;
+      border: 1px solid #ff6a00;
       padding: 0.8rem 2.8rem;
       cursor: pointer;
       text-decoration: none;
       display: inline-block;
-      transition: opacity 0.2s;
+      transition: all 0.2s ease;
     }
 
     .send-btn:hover {
-      opacity: 0.85;
+      background: #ffffff;
+      color: #ff6a00;
+      box-shadow: 0 0 12px rgba(255,106,0,0.25);
     }
 
     .copy-confirm {
       font-size: 0.7rem;
       letter-spacing: 0.2em;
-      color: #fff;
+      color: #ff6a00;
       text-transform: uppercase;
       height: 1rem;
       opacity: 0;
@@ -76,7 +79,7 @@
     .instructions {
       font-family: 'DM Mono', monospace;
       font-size: 0.8rem;
-      color: #fff;
+      color: #111;
       text-align: left;
       line-height: 1.5;
       letter-spacing: 0.04em;
@@ -91,7 +94,7 @@
       transform: translateX(-50%);
       font-size: 0.6rem;
       letter-spacing: 0.25em;
-      color: #fff;
+      color: #111;
       text-transform: uppercase;
     }
   </style>
@@ -108,7 +111,7 @@
     <div class="instructions">
       How to contribute:<br>
       1. Press “CONTRIBUTE”<br>
-      2. Open Phantom → select Solana<br>
+      2. Open Phantom → select SOL<br>
       3. Paste address or use username: @v1rtuozas<br>
       4. Enter amount → confirm
     </div>
