@@ -109,12 +109,12 @@
     <div class="copy-confirm" id="confirm">copied</div>
 
     <div class="instructions">
-      INSTRUCTIONS:<br>
+      How to contribute:<br>
       1. Press “SUPPORT V1”<br>
       2. Press Send → Select Solana<br>
       3. Paste Address or Use: @v1rtuozas<br>
       4. Enter Amount → Confirm<br>
-      5. Thank you for your support!
+      5. Enjoy being part of the V1 system
     </div>
   </main>
 
@@ -142,23 +142,19 @@
 
       const btn = document.querySelector('.send-btn');
 
-      // Step 1: PROCESSING feedback
-      btn.textContent = 'PROCESSING...';
+      // Copy the wallet first
       copyWallet();
 
-      // Step 2: Slight delay → OPENING PHANTOM
+      // Immediately open Phantom in a new tab/window
+      window.open('https://phantom.app/ul/v1/send?recipient=' + address, '_blank');
+
+      // Show "OPENING PHANTOM..." animation in the button
+      btn.textContent = 'OPENING PHANTOM...';
+
+      // Reset button text after a short delay
       setTimeout(() => {
-        btn.textContent = 'OPENING PHANTOM...';
-
-        // Open Phantom immediately while still considered a user gesture
-        window.open('https://phantom.app/ul/v1/send?recipient=' + address, '_blank');
-
-        // Step 3: Reset button after a bit
-        setTimeout(() => {
-          btn.textContent = 'SUPPORT V1';
-        }, 1500);
-
-      }, 1000); // 1s PROCESSING display
+        btn.textContent = 'SUPPORT V1';
+      }, 1500);
     }
 
     function showConfirm() {
