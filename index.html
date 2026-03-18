@@ -52,39 +52,7 @@
       cursor: pointer;
       text-decoration: none;
       display: inline-block;
-      position: relative;
-      overflow: hidden;
       transition: all 0.2s ease;
-    }
-
-    /* Rainbow sweep on click */
-    .send-btn::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
-      transform: translateX(-100%) rotate(45deg);
-      opacity: 0;
-      transition: none;
-      z-index: 0;
-    }
-
-    .send-btn.active::after {
-      animation: sweep 1s linear forwards;
-      opacity: 0.8;
-    }
-
-    @keyframes sweep {
-      0% { transform: translateX(-100%) rotate(45deg); opacity: 0.8; }
-      100% { transform: translateX(100%) rotate(45deg); opacity: 0; }
-    }
-
-    .send-btn span {
-      position: relative;
-      z-index: 1;
     }
 
     .send-btn:hover {
@@ -111,7 +79,7 @@
     .instructions {
       font-family: 'DM Mono', monospace;
       font-size: 0.8rem;
-      color: #666;
+      color: #111;
       text-align: left;
       line-height: 1.5;
       letter-spacing: 0.04em;
@@ -137,16 +105,16 @@
   <main>
     <div class="name">V1 | THE ONE</div>
 
-    <a class="send-btn" href="#" onclick="copyAndOpenPhantom(event)"><span>SUPPORT V1</span></a>
+    <a class="send-btn" href="#" onclick="copyAndOpenPhantom()">SUPPORT V1</a>
     <div class="copy-confirm" id="confirm">copied</div>
 
     <div class="instructions">
-      How to contribute:<br>
+      INSTRUCTIONS:<br>
       1. Press “SUPPORT V1”<br>
-      2. Press Send → Select Solana<br>
-      3. Paste Address or Use: @v1rtuozas<br>
+      2. Press Send → Solana<br>
+      3. Paste Address<br>
       4. Enter Amount → Confirm<br>
-      5. Enjoy being part of the V1 system
+      5. Thank You!<br>
     </div>
   </main>
 
@@ -169,22 +137,11 @@
       }
     }
 
-    function copyAndOpenPhantom(event) {
-      event.preventDefault();
-
-      const btn = document.querySelector('.send-btn');
-
-      // Add rainbow sweep class
-      btn.classList.add('active');
-
-      // Remove class after animation
-      setTimeout(() => btn.classList.remove('active'), 1000);
-
-      // Copy wallet
+    function copyAndOpenPhantom() {
       copyWallet();
-
-      // Open Phantom immediately (user gesture)
-      window.open('https://phantom.app/ul/v1/send?recipient=' + address, '_blank');
+      setTimeout(() => {
+        window.location.href = 'https://phantom.app/ul/v1/send?recipient=@v1rtuozas' + address;
+      }, 500);
     }
 
     function showConfirm() {
