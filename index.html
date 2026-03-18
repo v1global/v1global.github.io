@@ -79,7 +79,7 @@
     .instructions {
       font-family: 'DM Mono', monospace;
       font-size: 0.8rem;
-      color: #111;
+      color: #666;
       text-align: left;
       line-height: 1.5;
       letter-spacing: 0.04em;
@@ -105,15 +105,12 @@
   <main>
     <div class="name">V1 | THE ONE</div>
 
-    <a class="send-btn" href="#" onclick="copyAndOpenPhantom()">SUPPORT V1</a>
+    <a class="send-btn" href="#" onclick="copyAndOpenPhantom(event)">SUPPORT V1</a>
     <div class="copy-confirm" id="confirm">copied</div>
 
     <div class="instructions">
-      How to contribute:<br>
-      1. Press “SUPPORT V1”<br>
-      2. Press Send → Select Solana<br>
-      3. Paste Adress or Use: @v1rtuozas<br>
-      4. Enter Amount → Confirm
+      Press SUPPORT V1<br>
+      Paste → Send
     </div>
   </main>
 
@@ -122,29 +119,36 @@
   <script>
     const address = 'D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3';
 
-    function copyAndOpenPhantom(e) {
-  e.preventDefault();
+    function copyWallet() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(address).then(showConfirm);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = address;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        showConfirm();
+      }
+    }
 
-  const btn = document.querySelector('.send-btn');
-  btn.textContent = 'PROCESSING...';
+    function copyAndOpenPhantom(event) {
+      event.preventDefault();
 
-  copyWallet();
+      const btn = document.querySelector('.send-btn');
+      btn.textContent = 'PROCESSING...';
 
-  setTimeout(() => {
-    btn.textContent = 'OPENING...';
-    window.open('https://phantom.app/ul/v1/send?recipient=' + address, '_blank');
-  }, 300);
-
-  setTimeout(() => {
-    btn.textContent = 'SUPPORT V1';
-  }, 2000);
-}
-
-    function copyAndOpenPhantom() {
       copyWallet();
+
       setTimeout(() => {
-        window.location.href = 'https://phantom.app/ul/v1/send?recipient=@v1rtuozas' + address;
-      }, 500);
+        btn.textContent = 'OPENING...';
+        window.open('https://phantom.app/ul/v1/send?recipient=' + address, '_blank');
+      }, 300);
+
+      setTimeout(() => {
+        btn.textContent = 'SUPPORT V1';
+      }, 2000);
     }
 
     function showConfirm() {
