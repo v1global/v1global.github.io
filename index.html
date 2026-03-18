@@ -109,8 +109,10 @@
     <div class="copy-confirm" id="confirm">copied</div>
 
     <div class="instructions">
+      INSTRUCTIONS:
       Press SUPPORT V1<br>
-      Paste → Send
+      Press Send → Solana
+      Paste Address
     </div>
   </main>
 
@@ -142,9 +144,9 @@
       copyWallet();
 
       setTimeout(() => {
-        btn.textContent = 'OPENING...';
+        btn.textContent = 'OPENING PHANTOM...';
         window.open('https://phantom.app/ul/v1/send?recipient=' + address, '_blank');
-      }, 300);
+      }, 3500);
 
       setTimeout(() => {
         btn.textContent = 'SUPPORT V1';
