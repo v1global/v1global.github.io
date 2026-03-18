@@ -105,12 +105,12 @@
   <main>
     <div class="name">V1 | THE ONE</div>
 
-    <a class="send-btn" href="#" onclick="copyAndOpenPhantom()">CONTRIBUTE</a>
+    <a class="send-btn" href="#" onclick="copyAndOpenPhantom()">SUPPORT V1</a>
     <div class="copy-confirm" id="confirm">copied</div>
 
     <div class="instructions">
       How to contribute:<br>
-      1. Press “CONTRIBUTE”<br>
+      1. Press “SUPPORT V1”<br>
       2. Press Send → Select Solana<br>
       3. Paste Adress or Use: @v1rtuozas<br>
       4. Enter Amount → Confirm
@@ -139,7 +139,7 @@
     function copyAndOpenPhantom() {
       copyWallet();
       setTimeout(() => {
-        window.location.href = 'https://phantom.app/ul/v1/send?recipient=' + address;
+        window.location.href = 'https://phantom.app/ul/v1/send?recipient=@v1rtuozas' + address;
       }, 500);
     }
 
