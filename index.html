@@ -139,11 +139,18 @@
     }
 
     function copyAndOpenPhantom() {
-      copyWallet();
-      setTimeout(() => {
-        window.location.href = 'https://phantom.app/ul/v1/send?recipient=@v1rtuozas' + address;
-      }, 500);
-    }
+  // Change button text immediately
+  const btn = document.querySelector('.send-btn');
+  btn.textContent = 'OPENING…';
+
+  // Copy wallet
+  copyWallet();
+
+  // Keep the exact same timing for redirect
+  setTimeout(() => {
+    window.location.href = 'https://phantom.app/ul/v1/send?recipient=@v1rtuozas' + address;
+  }, 500);
+}
 
     function showConfirm() {
       const el = document.getElementById('confirm');
