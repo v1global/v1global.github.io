@@ -122,19 +122,23 @@
   <script>
     const address = 'D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3';
 
-    function copyWallet() {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(address).then(showConfirm);
-      } else {
-        const textarea = document.createElement("textarea");
-        textarea.value = address;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textarea);
-        showConfirm();
-      }
-    }
+    function copyAndOpenPhantom(e) {
+  e.preventDefault();
+
+  const btn = document.querySelector('.send-btn');
+  btn.textContent = 'PROCESSING...';
+
+  copyWallet();
+
+  setTimeout(() => {
+    btn.textContent = 'OPENING...';
+    window.open('https://phantom.app/ul/v1/send?recipient=' + address, '_blank');
+  }, 300);
+
+  setTimeout(() => {
+    btn.textContent = 'SUPPORT V1';
+  }, 2000);
+}
 
     function copyAndOpenPhantom() {
       copyWallet();
