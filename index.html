@@ -52,7 +52,39 @@
       cursor: pointer;
       text-decoration: none;
       display: inline-block;
+      position: relative;
+      overflow: hidden;
       transition: all 0.2s ease;
+    }
+
+    /* Rainbow sweep on click */
+    .send-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+      transform: translateX(-100%) rotate(45deg);
+      opacity: 0;
+      transition: none;
+      z-index: 0;
+    }
+
+    .send-btn.active::after {
+      animation: sweep 1s linear forwards;
+      opacity: 0.8;
+    }
+
+    @keyframes sweep {
+      0% { transform: translateX(-100%) rotate(45deg); opacity: 0.8; }
+      100% { transform: translateX(100%) rotate(45deg); opacity: 0; }
+    }
+
+    .send-btn span {
+      position: relative;
+      z-index: 1;
     }
 
     .send-btn:hover {
@@ -105,7 +137,7 @@
   <main>
     <div class="name">V1 | THE ONE</div>
 
-    <a class="send-btn" href="#" onclick="copyAndOpenPhantom(event)">SUPPORT V1</a>
+    <a class="send-btn" href="#" onclick="copyAndOpenPhantom(event)"><span>SUPPORT V1</span></a>
     <div class="copy-confirm" id="confirm">copied</div>
 
     <div class="instructions">
@@ -142,19 +174,17 @@
 
       const btn = document.querySelector('.send-btn');
 
-      // Copy the wallet first
+      // Add rainbow sweep class
+      btn.classList.add('active');
+
+      // Remove class after animation
+      setTimeout(() => btn.classList.remove('active'), 1000);
+
+      // Copy wallet
       copyWallet();
 
-      // Immediately open Phantom in a new tab/window
+      // Open Phantom immediately (user gesture)
       window.open('https://phantom.app/ul/v1/send?recipient=' + address, '_blank');
-
-      // Show "OPENING PHANTOM..." animation in the button
-      btn.textContent = 'OPENING PHANTOM...';
-
-      // Reset button text after a short delay
-      setTimeout(() => {
-        btn.textContent = 'SUPPORT V1';
-      }, 1500);
     }
 
     function showConfirm() {
