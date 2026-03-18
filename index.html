@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>V1 | THE ONE</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 
   <style>
     * {
@@ -39,7 +39,6 @@
       100% { background-position: 30% 40%, 70% 60%; }
     }
 
-    /* GRID */
     .bg {
       position: fixed;
       inset: 0;
@@ -51,13 +50,12 @@
         linear-gradient(90deg, rgba(255,82,0,0.12) 1px, transparent 1px);
 
       background-size: 40px 40px;
-
       animation: gridMove 20s linear infinite;
     }
 
     @keyframes gridMove {
       from { transform: translateY(0); }
-      to   { transform: translateY(40px); }
+      to { transform: translateY(40px); }
     }
 
     main {
@@ -77,24 +75,34 @@
       margin-bottom: 0.6rem;
     }
 
-    .name-v1 {
+    /* NAME BLOCK */
+    .name {
+      display: flex;
+      flex-direction: column;
+      line-height: 0.85;
+    }
+
+    .name-v1,
+    .name-one {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(5rem, 25vw, 10rem);
-      color: var(--orange);
-      line-height: 0.9;
+    }
 
+    .name-v1 {
+      color: var(--orange);
       text-shadow:
-        0 0 20px rgba(255,82,0,0.6),
+        0 0 20px rgba(255,82,0,0.7),
         0 0 60px rgba(255,82,0,0.25);
     }
 
-    .name-the-one {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(1.2rem, 5vw, 2.5rem);
-      letter-spacing: 0.25em;
-      opacity: 0.5;
+    .name-one {
+      color: #ffffff;
+      text-shadow:
+        0 0 25px rgba(255,255,255,0.9),
+        0 0 60px rgba(255,255,255,0.4);
     }
 
+    /* BUTTON */
     .send-btn {
       margin-top: 2rem;
       font-family: 'Bebas Neue', sans-serif;
@@ -107,7 +115,6 @@
       cursor: pointer;
       position: relative;
       overflow: hidden;
-
       transition: transform 0.15s ease, box-shadow 0.2s ease;
     }
 
@@ -148,6 +155,30 @@
       opacity: 1;
     }
 
+    /* INSTRUCTIONS */
+    .card {
+      margin-top: 2rem;
+      padding: 1.2rem 1.4rem;
+      border: 1px solid rgba(255,82,0,0.3);
+      background: rgba(255,82,0,0.04);
+      backdrop-filter: blur(6px);
+      max-width: 260px;
+    }
+
+    .step {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--orange);
+      display: flex;
+      gap: 0.8rem;
+      padding: 0.4rem 0;
+    }
+
+    .step span {
+      opacity: 0.5;
+      width: 20px;
+    }
+
     footer {
       position: fixed;
       bottom: 1rem;
@@ -166,13 +197,20 @@
   <main>
     <p class="eyebrow">// transmission incoming</p>
 
-    <div>
+    <div class="name">
       <span class="name-v1">V1</span>
-      <span class="name-the-one">| THE ONE</span>
+      <span class="name-one">THE ONE</span>
     </div>
 
     <button class="send-btn" id="sendBtn">SUPPORT V1</button>
     <div class="copy-confirm" id="confirm">✓ address copied</div>
+
+    <div class="card">
+      <div class="step"><span>01</span> Tap Support</div>
+      <div class="step"><span>02</span> Phantom opens</div>
+      <div class="step"><span>03</span> Confirm & send</div>
+    </div>
+
   </main>
 
   <footer>made by V1</footer>
