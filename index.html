@@ -109,10 +109,12 @@
     <div class="copy-confirm" id="confirm">copied</div>
 
     <div class="instructions">
-      INSTRUCTIONS:
-      Press SUPPORT V1<br>
-      Press Send → Solana
-      Paste Address
+      How to contribute:<br>
+      1. Press “SUPPORT V1”<br>
+      2. Press Send → Select Solana<br>
+      3. Paste Address or Use: @v1rtuozas<br>
+      4. Enter Amount → Confirm<br>
+      5. Enjoy being part of the V1 system
     </div>
   </main>
 
@@ -143,14 +145,18 @@
 
       copyWallet();
 
+      // tiny pause before opening Phantom
       setTimeout(() => {
         btn.textContent = 'OPENING PHANTOM...';
-        window.open('https://phantom.app/ul/v1/send?recipient=' + address, '_blank');
-      }, 3500);
+        setTimeout(() => {
+          window.open('https://phantom.app/ul/v1/send?recipient=' + address, '_blank');
+        }, 500); // half-second pause before redirect
+      }, 1000); // one-second PROCESSING display
 
+      // reset button after full sequence
       setTimeout(() => {
         btn.textContent = 'SUPPORT V1';
-      }, 2000);
+      }, 3000);
     }
 
     function showConfirm() {
