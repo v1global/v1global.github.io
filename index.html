@@ -22,7 +22,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* soft glow */
+/* glow */
 body::before {
   content:"";
   position:absolute;
@@ -75,16 +75,28 @@ body.engaged .fox {
   font-size:14px;
   opacity:0;
   transform:translateY(6px);
-  transition:all .35s ease;
 }
 
 .line.show {
   opacity:1;
   transform:translateY(0);
+  transition:all .3s ease;
 }
 
 .line.old {
   opacity:0.35;
+}
+
+/* typing cursor */
+.cursor::after {
+  content:"|";
+  margin-left:2px;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,50%,100% { opacity:1; }
+  25%,75% { opacity:0; }
 }
 
 /* hint */
@@ -94,7 +106,7 @@ body.engaged .fox {
   margin-top:8px;
 }
 
-/* final state */
+/* address */
 .address {
   font-size:11px;
   letter-spacing:0.12em;
@@ -108,29 +120,20 @@ body.engaged .fox {
   opacity:1;
 }
 
-.copy {
-  margin-top:10px;
-  font-size:12px;
-  border:1px solid #F97316;
+/* big copied state */
+.copied {
+  margin-top:14px;
+  font-size:22px;
+  letter-spacing:0.18em;
   color:#F97316;
-  padding:8px 16px;
-  background:transparent;
-  border-radius:2px;
   opacity:0;
-  transition:all .2s ease;
+  transform:scale(0.9);
+  transition:all .3s ease;
 }
 
-.copy.show {
+.copied.show {
   opacity:1;
-}
-
-.copy:active {
-  transform:scale(0.95);
-}
-
-.copy.done {
-  background:#F97316;
-  color:#fff;
+  transform:scale(1);
 }
 </style>
 </head>
@@ -139,7 +142,7 @@ body.engaged .fox {
 
 <div class="stage">
 
-  <!-- minimal fox -->
+  <!-- fox -->
   <svg class="fox" viewBox="0 0 100 100">
     <polygon points="50,10 90,80 10,80" fill="#F97316"/>
     <circle cx="35" cy="55" r="4" fill="#111"/>
@@ -151,7 +154,7 @@ body.engaged .fox {
   <div id="hint" class="hint">tap →</div>
 
   <div id="address" class="address"></div>
-  <button id="copyBtn" class="copy">copy</button>
+  <div id="copied" class="copied">COPIED</div>
 
 </div>
 
@@ -170,27 +173,45 @@ const lines = [
 const chat = document.getElementById("chat");
 const hint = document.getElementById("hint");
 const addressEl = document.getElementById("address");
-const copyBtn = document.getElementById("copyBtn");
+const copiedEl = document.getElementById("copied");
 
 let step = 0;
+
+/* TYPE EFFECT */
+function typeLine(text, el, speed = 18) {
+  let i = 0;
+  el.textContent = "";
+  el.classList.add("cursor");
+
+  function type() {
+    if (i < text.length) {
+      el.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, speed);
+    } else {
+      el.classList.remove("cursor");
+    }
+  }
+
+  type();
+}
 
 /* add line */
 function addLine(text) {
   const el = document.createElement("div");
-  el.className = "line";
-  el.textContent = text;
+  el.className = "line show";
   chat.appendChild(el);
 
-  setTimeout(() => el.classList.add("show"), 20);
-
-  // fade previous lines
+  // fade older
   const all = document.querySelectorAll(".line");
   all.forEach((l, i) => {
     if (i < all.length - 1) l.classList.add("old");
   });
+
+  typeLine(text, el);
 }
 
-/* tap handler */
+/* tap */
 document.body.addEventListener("click", () => {
 
   if (step < lines.length) {
@@ -202,31 +223,27 @@ document.body.addEventListener("click", () => {
     }
 
     if (step === lines.length) {
-      setTimeout(showFinal, 400);
+      setTimeout(finalStep, 500);
     }
-
   }
 
 });
 
-function showFinal() {
+/* FINAL STEP = AUTO COPY */
+function finalStep() {
   hint.textContent = "";
 
-  addressEl.textContent = ADDR;
-  addressEl.classList.add("show");
-
-  copyBtn.classList.add("show");
-}
-
-/* copy */
-copyBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-
   navigator.clipboard.writeText(ADDR).then(() => {
-    copyBtn.textContent = "copied.";
-    copyBtn.classList.add("done");
+
+    addressEl.textContent = ADDR;
+    addressEl.classList.add("show");
+
+    setTimeout(() => {
+      copiedEl.classList.add("show");
+    }, 200);
+
   });
-});
+}
 </script>
 
 </body>
