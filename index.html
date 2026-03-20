@@ -30,12 +30,12 @@ body::before {
   height:280px;
   background:radial-gradient(circle, rgba(249,115,22,0.12), transparent 70%);
   animation:breathe 6s ease-in-out infinite;
-  transition:all 0.35s ease;
+  transition:all 0.4s ease;
 }
 
 body.done::before {
-  transform:scale(1.45);
-  opacity:0.3;
+  transform:scale(1.35);
+  opacity:0.25;
 }
 
 @keyframes breathe {
@@ -68,10 +68,6 @@ body.done::before {
 
 body.engaged .fox {
   transform:scale(1.05);
-}
-
-body.done .fox {
-  transform:scale(1.08);
 }
 
 /* chat */
@@ -110,41 +106,32 @@ body.done .fox {
   letter-spacing:0.12em;
   margin-top:10px;
   opacity:0;
-  transform:translateY(6px);
   transition:all .25s ease;
   word-break:break-all;
 }
 
 .address.show {
   opacity:1;
-  transform:translateY(0);
 }
 
-/* confirmation */
+/* copied confirmation - electrical pulse effect */
 .copied {
   margin-top:12px;
   font-size:18px;
-  letter-spacing:0.14em;
+  letter-spacing:0.12em;
   color:#F97316;
   opacity:0;
-  transform:scale(0.85);
 }
 
-/* stronger but controlled hit */
 .copied.show {
-  animation:confirm 0.5s cubic-bezier(.2,1.2,.3,1) forwards,
-             pulse 1.4s ease-in-out infinite 0.5s;
+  animation:electrical 1.2s ease-in-out infinite;
 }
 
-@keyframes confirm {
-  0%   { opacity:0; transform:scale(0.75); }
-  60%  { opacity:1; transform:scale(1.12); }
-  100% { opacity:1; transform:scale(1); }
-}
-
-@keyframes pulse {
-  0%,100% { transform:scale(1); opacity:1; }
-  50%     { transform:scale(1.05); opacity:0.85; }
+@keyframes electrical {
+  0%,100% { opacity:0.4; }
+  25% { opacity:1; }
+  50% { opacity:0.6; }
+  75% { opacity:0.85; }
 }
 </style>
 </head>
@@ -153,7 +140,7 @@ body.done .fox {
 
 <div class="stage">
 
-  <!-- fox -->
+  <!-- minimal fox -->
   <svg class="fox" viewBox="0 0 100 100">
     <polygon points="50,10 90,80 10,80" fill="#F97316"/>
     <circle cx="35" cy="55" r="4" fill="#111"/>
@@ -187,7 +174,9 @@ const addressEl = document.getElementById("address");
 const copiedEl = document.getElementById("copied");
 
 let step = 0;
+let finalReady = false;
 
+// add line instantly
 function addLine(text) {
   const el = document.createElement("div");
   el.className = "line";
@@ -204,42 +193,34 @@ function addLine(text) {
 
 document.body.addEventListener("click", () => {
 
-  if (step < lines.length - 1) {
-    addLine(lines[step]);
-    step++;
+  if (!finalReady) {
+    if (step < lines.length) {
+      addLine(lines[step]);
+      step++;
 
-    if (step === 1) {
-      document.body.classList.add("engaged");
+      if (step === 1) {
+        document.body.classList.add("engaged");
+      }
+
+      // after last text, allow final tap
+      if (step === lines.length) {
+        finalReady = true;
+        hint.textContent = "tap one last time →";
+      }
     }
-
-  } else if (step === lines.length - 1) {
-    // FINAL TAP
-    addLine(lines[step]);
-    step++;
-
-    setTimeout(finalStep, 180);
+  } else {
+    // final tap: copy + reveal
+    hint.textContent = "";
+    navigator.clipboard.writeText(ADDR).then(() => {
+      document.body.classList.add("done");
+      addressEl.textContent = ADDR;
+      addressEl.classList.add("show");
+      copiedEl.classList.add("show");
+    });
+    finalReady = false; // disable further taps
   }
 
 });
-
-function finalStep() {
-  hint.textContent = "";
-
-  navigator.clipboard.writeText(ADDR).then(() => {
-
-    document.body.classList.add("done");
-
-    // reveal address at same moment
-    addressEl.textContent = ADDR;
-    addressEl.classList.add("show");
-
-    // confirmation hit
-    setTimeout(() => {
-      copiedEl.classList.add("show");
-    }, 80);
-
-  });
-}
 </script>
 
 </body>
