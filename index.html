@@ -42,10 +42,8 @@ body {
   line-height:1.4;
   opacity:0;
   transform:translateY(6px);
-  transition:all .25s ease;
+  transition:all .3s ease;
   text-align:left;
-  display:flex;
-  flex-wrap:wrap;
 }
 
 .line.show {
@@ -57,21 +55,18 @@ body {
   opacity:0.35;
 }
 
-/* sender prefix */
-.sender {
-  font-weight:700;
-  margin-right:6px;
-  color:#ff7a2a;
-  flex-shrink:0;
-  font-size:14px;
-  opacity:0.85;
-}
-
 /* hint */
 .hint {
-  font-size:13px;
-  opacity:0.5;
-  margin-top:4px;
+  font-size:14px;
+  opacity:0.7; /* slightly more visible */
+  text-align:center; /* start centered */
+  animation: pulse 1.6s infinite;
+  margin-top:6px;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:0.6; transform:scale(1); }
+  50% { opacity:0.85; transform:scale(1.05); }
 }
 
 /* address block */
@@ -158,57 +153,41 @@ const copyBtn = document.getElementById("copyBtn");
 
 let step = 0;
 
-/* typewriter effect */
-function typeLine(text, callback) {
+/* add line */
+function addLine(text) {
   const el = document.createElement("div");
   el.className = "line";
-
-  const sender = document.createElement("span");
-  sender.className = "sender";
-  sender.textContent = "V1:";
-  el.appendChild(sender);
-
+  el.textContent = text;
   chat.appendChild(el);
 
-  let i = 0;
-  function typeChar() {
-    if(i < text.length){
-      el.appendChild(document.createTextNode(text[i]));
-      i++;
-      setTimeout(typeChar, 40); // typing speed
-    } else {
-      el.classList.add("show");
-      const all = document.querySelectorAll(".line");
-      all.forEach((l, idx) => {
-        if(idx < all.length-1) l.classList.add("old");
-      });
-      if(callback) callback();
-    }
-  }
-  typeChar();
+  setTimeout(() => el.classList.add("show"), 20);
+
+  const all = document.querySelectorAll(".line");
+  all.forEach((l,i)=>{
+    if(i<all.length-1) l.classList.add("old");
+  });
 }
 
 /* tap handler */
-document.body.addEventListener("click", () => {
+document.body.addEventListener("click", ()=>{
   if(step < lines.length){
-    typeLine(lines[step]);
+    addLine(lines[step]);
     step++;
 
     if(step === lines.length){
-      setTimeout(showFinal, 400);
+      setTimeout(showFinal, 300);
     }
   }
 });
 
-/* final address reveal */
-function showFinal() {
-  hint.style.display = "none";
+function showFinal(){
+  hint.style.display="none";
   addressEl.textContent = ADDR;
   addressBlock.classList.add("show");
 }
 
-/* copy function */
-copyBtn.addEventListener("click", (e)=>{
+/* copy */
+copyBtn.addEventListener("click",(e)=>{
   e.stopPropagation();
   navigator.clipboard.writeText(ADDR).then(()=>{
     copyBtn.textContent="copied.";
