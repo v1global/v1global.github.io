@@ -30,12 +30,12 @@ body::before {
   height:280px;
   background:radial-gradient(circle, rgba(249,115,22,0.12), transparent 70%);
   animation:breathe 6s ease-in-out infinite;
-  transition:all 0.4s ease;
+  transition:all 0.35s ease;
 }
 
 body.done::before {
-  transform:scale(1.35);
-  opacity:0.25;
+  transform:scale(1.45);
+  opacity:0.3;
 }
 
 @keyframes breathe {
@@ -68,6 +68,10 @@ body.done::before {
 
 body.engaged .fox {
   transform:scale(1.05);
+}
+
+body.done .fox {
+  transform:scale(1.08);
 }
 
 /* chat */
@@ -106,38 +110,41 @@ body.engaged .fox {
   letter-spacing:0.12em;
   margin-top:10px;
   opacity:0;
+  transform:translateY(6px);
   transition:all .25s ease;
   word-break:break-all;
 }
 
 .address.show {
   opacity:1;
+  transform:translateY(0);
 }
 
 /* confirmation */
 .copied {
   margin-top:12px;
   font-size:18px;
-  letter-spacing:0.12em;
+  letter-spacing:0.14em;
   color:#F97316;
   opacity:0;
-  transform:scale(0.9);
+  transform:scale(0.85);
 }
 
-/* entry + pulse */
+/* stronger but controlled hit */
 .copied.show {
-  animation:confirm 0.6s ease forwards, pulse 1.8s ease-in-out infinite 0.6s;
+  animation:confirm 0.5s cubic-bezier(.2,1.2,.3,1) forwards,
+             pulse 1.4s ease-in-out infinite 0.5s;
 }
 
 @keyframes confirm {
-  0%   { opacity:0; transform:scale(0.85); }
-  60%  { opacity:1; transform:scale(1.08); }
+  0%   { opacity:0; transform:scale(0.75); }
+  60%  { opacity:1; transform:scale(1.12); }
   100% { opacity:1; transform:scale(1); }
 }
 
 @keyframes pulse {
   0%,100% { transform:scale(1); opacity:1; }
-  50%     { transform:scale(1.04); opacity:0.85; }
+  50%     { transform:scale(1.05); opacity:0.85; }
 }
 </style>
 </head>
@@ -146,7 +153,7 @@ body.engaged .fox {
 
 <div class="stage">
 
-  <!-- minimal fox -->
+  <!-- fox -->
   <svg class="fox" viewBox="0 0 100 100">
     <polygon points="50,10 90,80 10,80" fill="#F97316"/>
     <circle cx="35" cy="55" r="4" fill="#111"/>
@@ -197,7 +204,7 @@ function addLine(text) {
 
 document.body.addEventListener("click", () => {
 
-  if (step < lines.length) {
+  if (step < lines.length - 1) {
     addLine(lines[step]);
     step++;
 
@@ -205,9 +212,12 @@ document.body.addEventListener("click", () => {
       document.body.classList.add("engaged");
     }
 
-    if (step === lines.length) {
-      setTimeout(finalStep, 350);
-    }
+  } else if (step === lines.length - 1) {
+    // FINAL TAP
+    addLine(lines[step]);
+    step++;
+
+    setTimeout(finalStep, 180);
   }
 
 });
@@ -219,12 +229,14 @@ function finalStep() {
 
     document.body.classList.add("done");
 
+    // reveal address at same moment
     addressEl.textContent = ADDR;
     addressEl.classList.add("show");
 
+    // confirmation hit
     setTimeout(() => {
       copiedEl.classList.add("show");
-    }, 120);
+    }, 80);
 
   });
 }
