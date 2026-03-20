@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>V1</title>
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=Orbitron:wght@700&display=swap" rel="stylesheet">
 
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -22,7 +22,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* soft glow */
+/* ambient glow */
 body::before {
   content:"";
   position:absolute;
@@ -30,6 +30,12 @@ body::before {
   height:280px;
   background:radial-gradient(circle, rgba(249,115,22,0.12), transparent 70%);
   animation:breathe 6s ease-in-out infinite;
+  transition:all 0.4s ease;
+}
+
+body.done::before {
+  transform:scale(1.35);
+  opacity:0.25;
 }
 
 @keyframes breathe {
@@ -42,25 +48,23 @@ body::before {
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:28px;
+  gap:26px;
   max-width:260px;
   text-align:center;
 }
 
-/* fox */
-.fox {
-  width:120px;
-  height:120px;
+/* logo */
+.logo {
+  font-family: 'Orbitron', sans-serif;
+  font-weight:700;
+  font-size:64px;
+  color:#F97316;
+  text-shadow: 0 0 12px rgba(249,115,22,0.5);
   animation:float 5s ease-in-out infinite;
   transition:all .25s ease;
 }
 
-@keyframes float {
-  0%,100% { transform:translateY(0); }
-  50% { transform:translateY(-8px); }
-}
-
-body.engaged .fox {
+body.engaged .logo {
   transform:scale(1.05);
 }
 
@@ -75,7 +79,7 @@ body.engaged .fox {
   font-size:14px;
   opacity:0;
   transform:translateY(6px);
-  transition:all .35s ease;
+  transition:all .18s ease;
 }
 
 .line.show {
@@ -91,16 +95,16 @@ body.engaged .fox {
 .hint {
   font-size:11px;
   opacity:0.4;
-  margin-top:8px;
+  margin-top:6px;
 }
 
-/* final state */
+/* address */
 .address {
   font-size:11px;
   letter-spacing:0.12em;
   margin-top:10px;
   opacity:0;
-  transition:all .3s ease;
+  transition:all .25s ease;
   word-break:break-all;
 }
 
@@ -108,29 +112,30 @@ body.engaged .fox {
   opacity:1;
 }
 
-.copy {
-  margin-top:10px;
-  font-size:12px;
-  border:1px solid #F97316;
+/* copied confirmation - electrical pulse effect */
+.copied {
+  margin-top:12px;
+  font-size:18px;
+  letter-spacing:0.12em;
   color:#F97316;
-  padding:8px 16px;
-  background:transparent;
-  border-radius:2px;
   opacity:0;
-  transition:all .2s ease;
 }
 
-.copy.show {
-  opacity:1;
+.copied.show {
+  animation:electrical 1.2s ease-in-out infinite;
 }
 
-.copy:active {
-  transform:scale(0.95);
+@keyframes electrical {
+  0%,100% { opacity:0.4; }
+  25% { opacity:1; }
+  50% { opacity:0.6; }
+  75% { opacity:0.85; }
 }
 
-.copy.done {
-  background:#F97316;
-  color:#fff;
+/* floating effect for logo */
+@keyframes float {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-8px); }
 }
 </style>
 </head>
@@ -139,19 +144,15 @@ body.engaged .fox {
 
 <div class="stage">
 
-  <!-- minimal fox -->
-  <svg class="fox" viewBox="0 0 100 100">
-    <polygon points="50,10 90,80 10,80" fill="#F97316"/>
-    <circle cx="35" cy="55" r="4" fill="#111"/>
-    <circle cx="65" cy="55" r="4" fill="#111"/>
-  </svg>
+  <!-- logo / V1 -->
+  <div class="logo">V1</div>
 
   <div id="chat" class="chat"></div>
 
   <div id="hint" class="hint">tap →</div>
 
   <div id="address" class="address"></div>
-  <button id="copyBtn" class="copy">copy</button>
+  <div id="copied" class="copied">copied.</div>
 
 </div>
 
@@ -162,7 +163,7 @@ const lines = [
   "what’s up.",
   "you found me.",
   "not many do.",
-  "this is a solana address.",
+  "it’s a solana address.",
   "if you want to send something...",
   "i’ll give it to you."
 ];
@@ -170,62 +171,55 @@ const lines = [
 const chat = document.getElementById("chat");
 const hint = document.getElementById("hint");
 const addressEl = document.getElementById("address");
-const copyBtn = document.getElementById("copyBtn");
+const copiedEl = document.getElementById("copied");
 
 let step = 0;
+let finalReady = false;
 
-/* add line */
+// add line instantly
 function addLine(text) {
   const el = document.createElement("div");
   el.className = "line";
   el.textContent = text;
   chat.appendChild(el);
 
-  setTimeout(() => el.classList.add("show"), 20);
+  setTimeout(() => el.classList.add("show"), 10);
 
-  // fade previous lines
   const all = document.querySelectorAll(".line");
   all.forEach((l, i) => {
     if (i < all.length - 1) l.classList.add("old");
   });
 }
 
-/* tap handler */
 document.body.addEventListener("click", () => {
 
-  if (step < lines.length) {
-    addLine(lines[step]);
-    step++;
+  if (!finalReady) {
+    if (step < lines.length) {
+      addLine(lines[step]);
+      step++;
 
-    if (step === 1) {
-      document.body.classList.add("engaged");
+      if (step === 1) {
+        document.body.classList.add("engaged");
+      }
+
+      // after last text, allow final tap
+      if (step === lines.length) {
+        finalReady = true;
+        hint.textContent = "tap one last time →";
+      }
     }
-
-    if (step === lines.length) {
-      setTimeout(showFinal, 400);
-    }
-
+  } else {
+    // final tap: copy + reveal
+    hint.textContent = "";
+    navigator.clipboard.writeText(ADDR).then(() => {
+      document.body.classList.add("done");
+      addressEl.textContent = ADDR;
+      addressEl.classList.add("show");
+      copiedEl.classList.add("show");
+    });
+    finalReady = false; // disable further taps
   }
 
-});
-
-function showFinal() {
-  hint.textContent = "";
-
-  addressEl.textContent = ADDR;
-  addressEl.classList.add("show");
-
-  copyBtn.classList.add("show");
-}
-
-/* copy */
-copyBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-
-  navigator.clipboard.writeText(ADDR).then(() => {
-    copyBtn.textContent = "copied.";
-    copyBtn.classList.add("done");
-  });
 });
 </script>
 
