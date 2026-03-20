@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>V1</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
@@ -16,33 +15,26 @@ body {
   display:flex;
   align-items:center;
   justify-content:center;
-  font-family:'DM Mono', monospace;
   background:#ffffff;
+  font-family:'DM Mono', monospace;
   overflow:hidden;
   color:#1a1a1a;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ambient glow */
+/* soft glow */
 body::before {
   content:"";
   position:absolute;
-  width:300px;
-  height:300px;
+  width:280px;
+  height:280px;
   background:radial-gradient(circle, rgba(249,115,22,0.12), transparent 70%);
   animation:breathe 6s ease-in-out infinite;
 }
 
 @keyframes breathe {
   0%,100% { transform:scale(1); opacity:0.6; }
-  50% { transform:scale(1.25); opacity:1; }
-}
-
-/* whole page = button */
-.hit {
-  position:absolute;
-  inset:0;
-  z-index:5;
+  50% { transform:scale(1.2); opacity:1; }
 }
 
 /* layout */
@@ -50,127 +42,191 @@ body::before {
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:26px;
-  pointer-events:none;
+  gap:28px;
+  max-width:260px;
+  text-align:center;
 }
 
 /* fox */
-.fox-wrap {
+.fox {
+  width:120px;
+  height:120px;
   animation:float 5s ease-in-out infinite;
   transition:all .25s ease;
 }
 
 @keyframes float {
   0%,100% { transform:translateY(0); }
-  50% { transform:translateY(-10px); }
+  50% { transform:translateY(-8px); }
 }
 
-/* reaction */
-body.engaged .fox-wrap {
-  transform:scale(1.06);
-  filter:drop-shadow(0 25px 70px rgba(249,115,22,0.45));
+body.engaged .fox {
+  transform:scale(1.05);
 }
 
-/* text */
-.text {
+/* chat */
+.chat {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.line {
   font-size:14px;
-  letter-spacing:0.08em;
-  opacity:0.7;
-  transition:all .4s ease;
-}
-
-.text.small {
-  font-size:11px;
-  opacity:0.5;
-}
-
-.hidden {
   opacity:0;
   transform:translateY(6px);
+  transition:all .35s ease;
 }
 
-/* reveal */
-.show {
-  opacity:1 !important;
-  transform:translateY(0) !important;
+.line.show {
+  opacity:1;
+  transform:translateY(0);
 }
 
-/* pulse feedback */
-body.done::before {
-  animation:none;
-  transform:scale(1.4);
-  opacity:0.2;
+.line.old {
+  opacity:0.35;
+}
+
+/* hint */
+.hint {
+  font-size:11px;
+  opacity:0.4;
+  margin-top:8px;
+}
+
+/* final state */
+.address {
+  font-size:11px;
+  letter-spacing:0.12em;
+  margin-top:10px;
+  opacity:0;
+  transition:all .3s ease;
+  word-break:break-all;
+}
+
+.address.show {
+  opacity:1;
+}
+
+.copy {
+  margin-top:10px;
+  font-size:12px;
+  border:1px solid #F97316;
+  color:#F97316;
+  padding:8px 16px;
+  background:transparent;
+  border-radius:2px;
+  opacity:0;
+  transition:all .2s ease;
+}
+
+.copy.show {
+  opacity:1;
+}
+
+.copy:active {
+  transform:scale(0.95);
+}
+
+.copy.done {
+  background:#F97316;
+  color:#fff;
 }
 </style>
 </head>
 
 <body>
 
-<div class="hit" id="hit"></div>
-
 <div class="stage">
 
-  <!-- YOUR FULL FOX SVG (unchanged) -->
-  <div class="fox-wrap">
-    <!-- PASTE YOUR ORIGINAL FOX SVG HERE -->
-  </div>
+  <!-- minimal fox -->
+  <svg class="fox" viewBox="0 0 100 100">
+    <polygon points="50,10 90,80 10,80" fill="#F97316"/>
+    <circle cx="35" cy="55" r="4" fill="#111"/>
+    <circle cx="65" cy="55" r="4" fill="#111"/>
+  </svg>
 
-  <div id="t1" class="text">what’s up.</div>
-  <div id="t2" class="text hidden">tap.</div>
-  <div id="t3" class="text small hidden">D2tH••••Wmx3</div>
+  <div id="chat" class="chat"></div>
+
+  <div id="hint" class="hint">tap →</div>
+
+  <div id="address" class="address"></div>
+  <button id="copyBtn" class="copy">copy</button>
 
 </div>
 
 <script>
 const ADDR = "D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3";
 
-const hit = document.getElementById("hit");
-const t2 = document.getElementById("t2");
-const t3 = document.getElementById("t3");
+const lines = [
+  "what’s up.",
+  "you found me.",
+  "not many do.",
+  "this is a solana address.",
+  "if you want to send something...",
+  "i’ll give it to you."
+];
 
-setTimeout(() => {
-  t2.classList.add("show");
-}, 1000);
+const chat = document.getElementById("chat");
+const hint = document.getElementById("hint");
+const addressEl = document.getElementById("address");
+const copyBtn = document.getElementById("copyBtn");
 
-let used = false;
+let step = 0;
 
-hit.addEventListener("click", () => {
+/* add line */
+function addLine(text) {
+  const el = document.createElement("div");
+  el.className = "line";
+  el.textContent = text;
+  chat.appendChild(el);
 
-  if (!used) {
-    used = true;
+  setTimeout(() => el.classList.add("show"), 20);
 
-    document.body.classList.add("engaged");
-
-    // reveal address
-    t3.classList.remove("hidden");
-    setTimeout(() => t3.classList.add("show"), 80);
-
-    // try open wallet
-    const universal = `https://phantom.app/ul/v1/send?to=${ADDR}`;
-    const appScheme = `phantom://v1/send?to=${ADDR}`;
-    const isMobile  = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    if (isMobile) {
-      window.location.href = appScheme;
-      setTimeout(() => fallback(), 1200);
-    } else {
-      fallback();
-      window.open(universal, "_blank");
-    }
-
-  } else {
-    // second tap = always copy again
-    fallback();
-  }
-});
-
-function fallback() {
-  navigator.clipboard.writeText(ADDR).then(() => {
-    document.body.classList.add("done");
-    t2.textContent = "copied.";
-    t3.textContent = ADDR;
+  // fade previous lines
+  const all = document.querySelectorAll(".line");
+  all.forEach((l, i) => {
+    if (i < all.length - 1) l.classList.add("old");
   });
 }
+
+/* tap handler */
+document.body.addEventListener("click", () => {
+
+  if (step < lines.length) {
+    addLine(lines[step]);
+    step++;
+
+    if (step === 1) {
+      document.body.classList.add("engaged");
+    }
+
+    if (step === lines.length) {
+      setTimeout(showFinal, 400);
+    }
+
+  }
+
+});
+
+function showFinal() {
+  hint.textContent = "";
+
+  addressEl.textContent = ADDR;
+  addressEl.classList.add("show");
+
+  copyBtn.classList.add("show");
+}
+
+/* copy */
+copyBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+
+  navigator.clipboard.writeText(ADDR).then(() => {
+    copyBtn.textContent = "copied.";
+    copyBtn.classList.add("done");
+  });
+});
 </script>
 
 </body>
