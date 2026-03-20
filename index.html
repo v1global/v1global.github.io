@@ -1,163 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>V1 | THE ONE</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>V1</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
 
-    html, body {
-      height: 100%;
-      background: #ffffff;
-      color: #0a0a0a;
-      font-family: 'DM Mono', monospace;
-      font-weight: 300;
-    }
-
-    main {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
-      padding: 2rem;
-    }
-
-    .name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(3.5rem, 14vw, 8rem);
-      letter-spacing: 0.05em;
-      line-height: 1;
-      text-align: center;
-      color: #0a0a0a;
-    }
-
-.send-btn {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1rem;
-  letter-spacing: 0.3em;
-  color: #ffffff;
-  background: #ff6a00;
-  border: 3px solid #ff6a00;
-  padding: 0.8rem 2.8rem;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.2s ease;
+body {
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'DM Mono', monospace;
+  background:#ffffff;
+  overflow:hidden;
+  color:#1a1a1a;
 }
-    
-    .send-btn:hover {
-      background: #ffffff;
-      color: #ff6a00;
-      box-shadow: 0 0 12px rgba(255,106,0,0.25);
-    }
 
-    .copy-confirm {
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      color: #ff6a00;
-      text-transform: uppercase;
-      height: 1rem;
-      opacity: 0;
-      transition: opacity 0.25s;
-      text-align: center;
-    }
+/* ambient glow */
+body::before {
+  content:"";
+  position:absolute;
+  width:280px;
+  height:280px;
+  background:radial-gradient(circle, rgba(249,115,22,0.15), transparent 70%);
+  animation:breathe 6s ease-in-out infinite;
+}
 
-    .copy-confirm.visible {
-      opacity: 1;
-    }
+@keyframes breathe {
+  0%,100% { transform:scale(1); opacity:0.6; }
+  50% { transform:scale(1.2); opacity:1; }
+}
 
-    .instructions {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      color: #111;
-      text-align: left;
-      line-height: 1.5;
-      letter-spacing: 0.04em;
-      max-width: 320px;
-      margin-top: 1.5rem;
-    }
+/* layout */
+.stage {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:30px;
+}
 
-    footer {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.6rem;
-      letter-spacing: 0.25em;
-      color: #111;
-      text-transform: uppercase;
-    }
-  </style>
+/* fox */
+.fox-wrap {
+  animation:float 5s ease-in-out infinite;
+  transition:all .25s ease;
+}
+
+@keyframes float {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-10px); }
+}
+
+body.engaged .fox-wrap {
+  transform:scale(1.05);
+  filter:drop-shadow(0 20px 60px rgba(249,115,22,0.4));
+}
+
+/* dialogue */
+.dialogue {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  font-size:14px;
+  letter-spacing:0.08em;
+}
+
+.hidden {
+  opacity:0;
+  transform:translateY(6px);
+  pointer-events:none;
+}
+
+.dialogue span {
+  transition:all .4s ease;
+}
+
+/* CTA */
+.cta {
+  margin-top:10px;
+  font-size:12px;
+  letter-spacing:0.18em;
+  padding:10px 20px;
+  border:1px solid #F97316;
+  color:#F97316;
+  background:transparent;
+  border-radius:2px;
+  transition:all .2s ease;
+}
+
+.cta:active {
+  transform:scale(0.96);
+}
+
+.cta.active {
+  background:#F97316;
+  color:#fff;
+}
+
+.address {
+  font-size:10px;
+  opacity:0.6;
+  margin-top:6px;
+  letter-spacing:0.12em;
+}
+
+/* fade in */
+.fade-in {
+  opacity:1 !important;
+  transform:translateY(0) !important;
+}
+</style>
 </head>
 
 <body>
 
-  <main>
-    <div class="name">V1 | THE ONE</div>
+<div class="stage">
 
-    <a class="send-btn" href="#" onclick="copyAndOpenPhantom()">SUPPORT V1</a>
-    <div class="copy-confirm" id="confirm">copied</div>
+  <!-- FOX (unchanged SVG) -->
+  <div class="fox-wrap">
+    <!-- keep your exact SVG here -->
+    <!-- (I’m keeping it short for clarity, paste your full fox SVG) -->
+    <svg width="140" height="160" viewBox="0 0 200 230">
+      <circle cx="100" cy="100" r="60" fill="#F97316"/>
+    </svg>
+  </div>
 
-    <div class="instructions">
-      INSTRUCTIONS:<br>
-      1. Press “SUPPORT V1”<br>
-      2. Press Send → Solana<br>
-      3. Paste Address<br>
-      4. Enter Amount → Confirm<br>
-      5. Done! 
-<br>
-    </div>
-  </main>
+  <div class="dialogue">
+    <span id="line1">what’s up?</span>
+    <span id="line2" class="hidden">you found me.</span>
+  </div>
 
-  <footer>made by V1</footer>
+  <button id="cta" class="cta hidden">send</button>
+  <div id="address" class="address hidden">D2tH••••Wmx3</div>
 
-  <script>
-    const address = 'D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3';
+</div>
 
-    function copyWallet() {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(address).then(showConfirm);
-      } else {
-        const textarea = document.createElement("textarea");
-        textarea.value = address;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textarea);
-        showConfirm();
-      }
-    }
+<script>
+const ADDR = "D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3";
 
-    function copyAndOpenPhantom() {
-  // Change button text immediately
-  const btn = document.querySelector('.send-btn');
-  btn.textContent = 'OPENING PHANTOM...';
+const line2 = document.getElementById("line2");
+const cta = document.getElementById("cta");
+const addr = document.getElementById("address");
 
-  // Copy wallet
-  copyWallet();
+setTimeout(() => {
+  line2.classList.add("fade-in");
+}, 1200);
 
-  // Keep the exact same timing for redirect
-  setTimeout(() => {
-    window.location.href = 'https://phantom.app/ul/v1/send?recipient=@v1rtuozas' + address;
-  }, 500);
+let engaged = false;
+
+document.body.addEventListener("click", () => {
+  if (!engaged) {
+    engaged = true;
+    document.body.classList.add("engaged");
+
+    cta.classList.remove("hidden");
+    addr.classList.remove("hidden");
+
+    setTimeout(() => {
+      cta.classList.add("fade-in");
+      addr.classList.add("fade-in");
+    }, 100);
+  }
+});
+
+/* CTA action */
+cta.addEventListener("click", (e) => {
+  e.stopPropagation();
+
+  const universal = `https://phantom.app/ul/v1/send?to=${ADDR}`;
+  const appScheme = `phantom://v1/send?to=${ADDR}`;
+  const isMobile  = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  cta.classList.add("active");
+
+  if (isMobile) {
+    window.location.href = appScheme;
+    setTimeout(() => fallbackCopy(), 1200);
+  } else {
+    fallbackCopy();
+    window.open(universal, "_blank");
+  }
+});
+
+function fallbackCopy() {
+  navigator.clipboard.writeText(ADDR).then(() => {
+    cta.textContent = "copied";
+    addr.textContent = ADDR;
+  });
 }
-
-    function showConfirm() {
-      const el = document.getElementById('confirm');
-      el.classList.add('visible');
-      setTimeout(() => el.classList.remove('visible'), 2000);
-    }
-  </script>
+</script>
 
 </body>
 </html>
