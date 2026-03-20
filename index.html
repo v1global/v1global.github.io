@@ -22,7 +22,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* glow */
+/* ambient glow */
 body::before {
   content:"";
   position:absolute;
@@ -30,6 +30,12 @@ body::before {
   height:280px;
   background:radial-gradient(circle, rgba(249,115,22,0.12), transparent 70%);
   animation:breathe 6s ease-in-out infinite;
+  transition:all 0.4s ease;
+}
+
+body.done::before {
+  transform:scale(1.35);
+  opacity:0.25;
 }
 
 @keyframes breathe {
@@ -42,7 +48,7 @@ body::before {
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:28px;
+  gap:26px;
   max-width:260px;
   text-align:center;
 }
@@ -75,35 +81,23 @@ body.engaged .fox {
   font-size:14px;
   opacity:0;
   transform:translateY(6px);
+  transition:all .18s ease;
 }
 
 .line.show {
   opacity:1;
   transform:translateY(0);
-  transition:all .3s ease;
 }
 
 .line.old {
   opacity:0.35;
 }
 
-/* typing cursor */
-.cursor::after {
-  content:"|";
-  margin-left:2px;
-  animation:blink 1s infinite;
-}
-
-@keyframes blink {
-  0%,50%,100% { opacity:1; }
-  25%,75% { opacity:0; }
-}
-
 /* hint */
 .hint {
   font-size:11px;
   opacity:0.4;
-  margin-top:8px;
+  margin-top:6px;
 }
 
 /* address */
@@ -112,7 +106,7 @@ body.engaged .fox {
   letter-spacing:0.12em;
   margin-top:10px;
   opacity:0;
-  transition:all .3s ease;
+  transition:all .25s ease;
   word-break:break-all;
 }
 
@@ -120,20 +114,30 @@ body.engaged .fox {
   opacity:1;
 }
 
-/* big copied state */
+/* confirmation */
 .copied {
-  margin-top:14px;
-  font-size:22px;
-  letter-spacing:0.18em;
+  margin-top:12px;
+  font-size:18px;
+  letter-spacing:0.12em;
   color:#F97316;
   opacity:0;
   transform:scale(0.9);
-  transition:all .3s ease;
 }
 
+/* entry + pulse */
 .copied.show {
-  opacity:1;
-  transform:scale(1);
+  animation:confirm 0.6s ease forwards, pulse 1.8s ease-in-out infinite 0.6s;
+}
+
+@keyframes confirm {
+  0%   { opacity:0; transform:scale(0.85); }
+  60%  { opacity:1; transform:scale(1.08); }
+  100% { opacity:1; transform:scale(1); }
+}
+
+@keyframes pulse {
+  0%,100% { transform:scale(1); opacity:1; }
+  50%     { transform:scale(1.04); opacity:0.85; }
 }
 </style>
 </head>
@@ -142,7 +146,7 @@ body.engaged .fox {
 
 <div class="stage">
 
-  <!-- fox -->
+  <!-- minimal fox -->
   <svg class="fox" viewBox="0 0 100 100">
     <polygon points="50,10 90,80 10,80" fill="#F97316"/>
     <circle cx="35" cy="55" r="4" fill="#111"/>
@@ -154,7 +158,7 @@ body.engaged .fox {
   <div id="hint" class="hint">tap →</div>
 
   <div id="address" class="address"></div>
-  <div id="copied" class="copied">COPIED</div>
+  <div id="copied" class="copied">copied.</div>
 
 </div>
 
@@ -165,7 +169,7 @@ const lines = [
   "what’s up.",
   "you found me.",
   "not many do.",
-  "this is a solana address.",
+  "it’s a solana address.",
   "if you want to send something...",
   "i’ll give it to you."
 ];
@@ -177,41 +181,20 @@ const copiedEl = document.getElementById("copied");
 
 let step = 0;
 
-/* TYPE EFFECT */
-function typeLine(text, el, speed = 18) {
-  let i = 0;
-  el.textContent = "";
-  el.classList.add("cursor");
-
-  function type() {
-    if (i < text.length) {
-      el.textContent += text.charAt(i);
-      i++;
-      setTimeout(type, speed);
-    } else {
-      el.classList.remove("cursor");
-    }
-  }
-
-  type();
-}
-
-/* add line */
 function addLine(text) {
   const el = document.createElement("div");
-  el.className = "line show";
+  el.className = "line";
+  el.textContent = text;
   chat.appendChild(el);
 
-  // fade older
+  setTimeout(() => el.classList.add("show"), 10);
+
   const all = document.querySelectorAll(".line");
   all.forEach((l, i) => {
     if (i < all.length - 1) l.classList.add("old");
   });
-
-  typeLine(text, el);
 }
 
-/* tap */
 document.body.addEventListener("click", () => {
 
   if (step < lines.length) {
@@ -223,24 +206,25 @@ document.body.addEventListener("click", () => {
     }
 
     if (step === lines.length) {
-      setTimeout(finalStep, 500);
+      setTimeout(finalStep, 350);
     }
   }
 
 });
 
-/* FINAL STEP = AUTO COPY */
 function finalStep() {
   hint.textContent = "";
 
   navigator.clipboard.writeText(ADDR).then(() => {
+
+    document.body.classList.add("done");
 
     addressEl.textContent = ADDR;
     addressEl.classList.add("show");
 
     setTimeout(() => {
       copiedEl.classList.add("show");
-    }, 200);
+    }, 120);
 
   });
 }
