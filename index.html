@@ -20,21 +20,29 @@ body {
   background:#ffffff;
   overflow:hidden;
   color:#1a1a1a;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ambient glow */
 body::before {
   content:"";
   position:absolute;
-  width:280px;
-  height:280px;
-  background:radial-gradient(circle, rgba(249,115,22,0.15), transparent 70%);
+  width:300px;
+  height:300px;
+  background:radial-gradient(circle, rgba(249,115,22,0.12), transparent 70%);
   animation:breathe 6s ease-in-out infinite;
 }
 
 @keyframes breathe {
   0%,100% { transform:scale(1); opacity:0.6; }
-  50% { transform:scale(1.2); opacity:1; }
+  50% { transform:scale(1.25); opacity:1; }
+}
+
+/* whole page = button */
+.hit {
+  position:absolute;
+  inset:0;
+  z-index:5;
 }
 
 /* layout */
@@ -42,7 +50,8 @@ body::before {
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:30px;
+  gap:26px;
+  pointer-events:none;
 }
 
 /* fox */
@@ -56,142 +65,110 @@ body::before {
   50% { transform:translateY(-10px); }
 }
 
+/* reaction */
 body.engaged .fox-wrap {
-  transform:scale(1.05);
-  filter:drop-shadow(0 20px 60px rgba(249,115,22,0.4));
+  transform:scale(1.06);
+  filter:drop-shadow(0 25px 70px rgba(249,115,22,0.45));
 }
 
-/* dialogue */
-.dialogue {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
+/* text */
+.text {
   font-size:14px;
   letter-spacing:0.08em;
+  opacity:0.7;
+  transition:all .4s ease;
+}
+
+.text.small {
+  font-size:11px;
+  opacity:0.5;
 }
 
 .hidden {
   opacity:0;
   transform:translateY(6px);
-  pointer-events:none;
 }
 
-.dialogue span {
-  transition:all .4s ease;
-}
-
-/* CTA */
-.cta {
-  margin-top:10px;
-  font-size:12px;
-  letter-spacing:0.18em;
-  padding:10px 20px;
-  border:1px solid #F97316;
-  color:#F97316;
-  background:transparent;
-  border-radius:2px;
-  transition:all .2s ease;
-}
-
-.cta:active {
-  transform:scale(0.96);
-}
-
-.cta.active {
-  background:#F97316;
-  color:#fff;
-}
-
-.address {
-  font-size:10px;
-  opacity:0.6;
-  margin-top:6px;
-  letter-spacing:0.12em;
-}
-
-/* fade in */
-.fade-in {
+/* reveal */
+.show {
   opacity:1 !important;
   transform:translateY(0) !important;
+}
+
+/* pulse feedback */
+body.done::before {
+  animation:none;
+  transform:scale(1.4);
+  opacity:0.2;
 }
 </style>
 </head>
 
 <body>
 
+<div class="hit" id="hit"></div>
+
 <div class="stage">
 
-  <!-- FOX (unchanged SVG) -->
+  <!-- YOUR FULL FOX SVG (unchanged) -->
   <div class="fox-wrap">
-    <!-- keep your exact SVG here -->
-    <!-- (I’m keeping it short for clarity, paste your full fox SVG) -->
-    <svg width="140" height="160" viewBox="0 0 200 230">
-      <circle cx="100" cy="100" r="60" fill="#F97316"/>
-    </svg>
+    <!-- PASTE YOUR ORIGINAL FOX SVG HERE -->
   </div>
 
-  <div class="dialogue">
-    <span id="line1">what’s up?</span>
-    <span id="line2" class="hidden">you found me.</span>
-  </div>
-
-  <button id="cta" class="cta hidden">send</button>
-  <div id="address" class="address hidden">D2tH••••Wmx3</div>
+  <div id="t1" class="text">what’s up.</div>
+  <div id="t2" class="text hidden">tap.</div>
+  <div id="t3" class="text small hidden">D2tH••••Wmx3</div>
 
 </div>
 
 <script>
 const ADDR = "D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3";
 
-const line2 = document.getElementById("line2");
-const cta = document.getElementById("cta");
-const addr = document.getElementById("address");
+const hit = document.getElementById("hit");
+const t2 = document.getElementById("t2");
+const t3 = document.getElementById("t3");
 
 setTimeout(() => {
-  line2.classList.add("fade-in");
-}, 1200);
+  t2.classList.add("show");
+}, 1000);
 
-let engaged = false;
+let used = false;
 
-document.body.addEventListener("click", () => {
-  if (!engaged) {
-    engaged = true;
+hit.addEventListener("click", () => {
+
+  if (!used) {
+    used = true;
+
     document.body.classList.add("engaged");
 
-    cta.classList.remove("hidden");
-    addr.classList.remove("hidden");
+    // reveal address
+    t3.classList.remove("hidden");
+    setTimeout(() => t3.classList.add("show"), 80);
 
-    setTimeout(() => {
-      cta.classList.add("fade-in");
-      addr.classList.add("fade-in");
-    }, 100);
-  }
-});
+    // try open wallet
+    const universal = `https://phantom.app/ul/v1/send?to=${ADDR}`;
+    const appScheme = `phantom://v1/send?to=${ADDR}`;
+    const isMobile  = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-/* CTA action */
-cta.addEventListener("click", (e) => {
-  e.stopPropagation();
+    if (isMobile) {
+      window.location.href = appScheme;
+      setTimeout(() => fallback(), 1200);
+    } else {
+      fallback();
+      window.open(universal, "_blank");
+    }
 
-  const universal = `https://phantom.app/ul/v1/send?to=${ADDR}`;
-  const appScheme = `phantom://v1/send?to=${ADDR}`;
-  const isMobile  = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-  cta.classList.add("active");
-
-  if (isMobile) {
-    window.location.href = appScheme;
-    setTimeout(() => fallbackCopy(), 1200);
   } else {
-    fallbackCopy();
-    window.open(universal, "_blank");
+    // second tap = always copy again
+    fallback();
   }
 });
 
-function fallbackCopy() {
+function fallback() {
   navigator.clipboard.writeText(ADDR).then(() => {
-    cta.textContent = "copied";
-    addr.textContent = ADDR;
+    document.body.classList.add("done");
+    t2.textContent = "copied.";
+    t3.textContent = ADDR;
   });
 }
 </script>
