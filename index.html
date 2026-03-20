@@ -117,23 +117,30 @@ body {
   background:#ffaa70;
 }
 
-/* wallet button */
-.wallet-button {
+/* wallet buttons container */
+.wallet-buttons {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items:center;
+  margin-top:16px; /* slightly lower than copy */
+  width:100%;
+}
+
+.wallet-buttons button {
   width:70%;
   max-width:200px;
-  padding:10px 0;
-  font-size:14px;
+  padding:12px 0; /* slightly taller to stand out */
+  font-size:15px;
   border:none;
   border-radius:999px;
-  background:linear-gradient(90deg, #e65d1a, #ff944d);
+  background:#ff7a2a;
   color:#fff;
   cursor:pointer;
   transition:all .15s ease;
-  margin-top:12px; /* slightly lower than copy */
-  align-self:center;
 }
 
-.wallet-button:active {
+.wallet-buttons button:active {
   transform:scale(0.95);
 }
 </style>
@@ -150,7 +157,10 @@ body {
     <div id="address" class="address"></div>
     <button id="copyBtn" class="copy">copy</button>
 
-    <button id="phantomBtn" class="wallet-button">Open Phantom</button>
+    <div class="wallet-buttons">
+      <button id="phantomBtn">Open Phantom</button>
+      <button id="metaBtn">Open MetaMask</button>
+    </div>
   </div>
 
 </div>
@@ -173,6 +183,7 @@ const addressBlock = document.getElementById("addressBlock");
 const addressEl = document.getElementById("address");
 const copyBtn = document.getElementById("copyBtn");
 const phantomBtn = document.getElementById("phantomBtn");
+const metaBtn = document.getElementById("metaBtn");
 
 let step = 0;
 
@@ -222,6 +233,11 @@ copyBtn.addEventListener("click",(e)=>{
 /* Phantom wallet button */
 phantomBtn.addEventListener("click",()=>{
   window.location.href = `https://phantom.app/ul/browse/${ADDR}`;
+});
+
+/* MetaMask wallet button */
+metaBtn.addEventListener("click",()=>{
+  window.location.href = `https://metamask.app.link/send/${ADDR}`;
 });
 </script>
 
