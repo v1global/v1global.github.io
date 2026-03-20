@@ -22,7 +22,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ambient glow */
+/* soft glow */
 body::before {
   content:"";
   position:absolute;
@@ -30,12 +30,6 @@ body::before {
   height:280px;
   background:radial-gradient(circle, rgba(249,115,22,0.12), transparent 70%);
   animation:breathe 6s ease-in-out infinite;
-  transition:all 0.4s ease;
-}
-
-body.done::before {
-  transform:scale(1.35);
-  opacity:0.25;
 }
 
 @keyframes breathe {
@@ -48,7 +42,7 @@ body.done::before {
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:26px;
+  gap:28px;
   max-width:260px;
   text-align:center;
 }
@@ -81,7 +75,7 @@ body.engaged .fox {
   font-size:14px;
   opacity:0;
   transform:translateY(6px);
-  transition:all .18s ease;
+  transition:all .35s ease;
 }
 
 .line.show {
@@ -97,16 +91,16 @@ body.engaged .fox {
 .hint {
   font-size:11px;
   opacity:0.4;
-  margin-top:6px;
+  margin-top:8px;
 }
 
-/* address */
+/* final state */
 .address {
   font-size:11px;
   letter-spacing:0.12em;
   margin-top:10px;
   opacity:0;
-  transition:all .25s ease;
+  transition:all .3s ease;
   word-break:break-all;
 }
 
@@ -114,24 +108,29 @@ body.engaged .fox {
   opacity:1;
 }
 
-/* copied confirmation - electrical pulse effect */
-.copied {
-  margin-top:12px;
-  font-size:18px;
-  letter-spacing:0.12em;
+.copy {
+  margin-top:10px;
+  font-size:12px;
+  border:1px solid #F97316;
   color:#F97316;
+  padding:8px 16px;
+  background:transparent;
+  border-radius:2px;
   opacity:0;
+  transition:all .2s ease;
 }
 
-.copied.show {
-  animation:electrical 1.2s ease-in-out infinite;
+.copy.show {
+  opacity:1;
 }
 
-@keyframes electrical {
-  0%,100% { opacity:0.4; }
-  25% { opacity:1; }
-  50% { opacity:0.6; }
-  75% { opacity:0.85; }
+.copy:active {
+  transform:scale(0.95);
+}
+
+.copy.done {
+  background:#F97316;
+  color:#fff;
 }
 </style>
 </head>
@@ -152,7 +151,7 @@ body.engaged .fox {
   <div id="hint" class="hint">tap →</div>
 
   <div id="address" class="address"></div>
-  <div id="copied" class="copied">copied.</div>
+  <button id="copyBtn" class="copy">copy</button>
 
 </div>
 
@@ -163,7 +162,7 @@ const lines = [
   "what’s up.",
   "you found me.",
   "not many do.",
-  "it’s a solana address.",
+  "this is a solana address.",
   "if you want to send something...",
   "i’ll give it to you."
 ];
@@ -171,55 +170,62 @@ const lines = [
 const chat = document.getElementById("chat");
 const hint = document.getElementById("hint");
 const addressEl = document.getElementById("address");
-const copiedEl = document.getElementById("copied");
+const copyBtn = document.getElementById("copyBtn");
 
 let step = 0;
-let finalReady = false;
 
-// add line instantly
+/* add line */
 function addLine(text) {
   const el = document.createElement("div");
   el.className = "line";
   el.textContent = text;
   chat.appendChild(el);
 
-  setTimeout(() => el.classList.add("show"), 10);
+  setTimeout(() => el.classList.add("show"), 20);
 
+  // fade previous lines
   const all = document.querySelectorAll(".line");
   all.forEach((l, i) => {
     if (i < all.length - 1) l.classList.add("old");
   });
 }
 
+/* tap handler */
 document.body.addEventListener("click", () => {
 
-  if (!finalReady) {
-    if (step < lines.length) {
-      addLine(lines[step]);
-      step++;
+  if (step < lines.length) {
+    addLine(lines[step]);
+    step++;
 
-      if (step === 1) {
-        document.body.classList.add("engaged");
-      }
-
-      // after last text, allow final tap
-      if (step === lines.length) {
-        finalReady = true;
-        hint.textContent = "tap one last time →";
-      }
+    if (step === 1) {
+      document.body.classList.add("engaged");
     }
-  } else {
-    // final tap: copy + reveal
-    hint.textContent = "";
-    navigator.clipboard.writeText(ADDR).then(() => {
-      document.body.classList.add("done");
-      addressEl.textContent = ADDR;
-      addressEl.classList.add("show");
-      copiedEl.classList.add("show");
-    });
-    finalReady = false; // disable further taps
+
+    if (step === lines.length) {
+      setTimeout(showFinal, 400);
+    }
+
   }
 
+});
+
+function showFinal() {
+  hint.textContent = "";
+
+  addressEl.textContent = ADDR;
+  addressEl.classList.add("show");
+
+  copyBtn.classList.add("show");
+}
+
+/* copy */
+copyBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+
+  navigator.clipboard.writeText(ADDR).then(() => {
+    copyBtn.textContent = "copied.";
+    copyBtn.classList.add("done");
+  });
 });
 </script>
 
