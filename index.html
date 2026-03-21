@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>V1</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -27,7 +28,6 @@ body {
   gap:16px;
   width:100%;
   max-width:360px;
-  transform: translateY(20px);
 }
 
 .chat {
@@ -39,24 +39,33 @@ body {
 .line {
   font-size:16px;
   line-height:1.4;
-  opacity:0;
-  transform:translateY(6px);
-  transition:all .25s ease;
 }
 
-.line.show {
-  opacity:1;
-  transform:translateY(0);
-}
-
+/* previous lines fade slightly */
 .line.old {
   opacity:0.35;
+  transition:opacity .25s ease;
+}
+
+/* typing cursor */
+.line::after {
+  content:"|";
+  margin-left:2px;
+  animation:blink 1s infinite;
+}
+
+.line.done::after {
+  content:"";
+}
+
+@keyframes blink {
+  0%,100% { opacity:1; }
+  50% { opacity:0; }
 }
 
 .hint {
   font-size:14px;
   opacity:0.65;
-  text-align:left;
   animation:pulse 1.6s infinite;
 }
 
@@ -77,7 +86,7 @@ body {
 .address-container.show { opacity:1; }
 
 .address {
-  font-size:16px;
+  font-size:15px;
   font-weight:600;
   background:rgba(255,122,42,0.1);
   padding:12px 16px;
@@ -99,7 +108,7 @@ body {
 
 .copy.done { background:#ffaa70; }
 
-/* wallet zone */
+/* wallet buttons */
 .wallet-zone {
   position:fixed;
   bottom:40px;
@@ -128,6 +137,7 @@ body {
 }
 </style>
 </head>
+
 <body>
 
 <div class="stage">
@@ -167,28 +177,33 @@ const walletZone = document.getElementById("walletZone");
 let step = 0;
 let typing = false;
 
-/* FIXED typing effect */
+/* improved typing */
 function typeLine(text, done) {
   if (typing) return;
   typing = true;
 
   const el = document.createElement("div");
   el.className = "line";
-  const textNode = document.createTextNode("");
-  el.appendChild(textNode);
   chat.appendChild(el);
 
   let i = 0;
 
   function typeChar() {
-    textNode.nodeValue += text.charAt(i);
+    el.textContent = text.slice(0, i + 1);
     i++;
 
     if (i < text.length) {
-      setTimeout(typeChar, 28); // tuned speed
-    } else {
-      el.classList.add("show");
+      let speed = 18 + Math.random() * 20;
 
+      // natural pauses
+      if (text[i-1] === "." || text[i-1] === "...") speed += 120;
+      if (text[i-1] === ",") speed += 60;
+
+      setTimeout(typeChar, speed);
+    } else {
+      el.classList.add("done");
+
+      // fade previous lines
       const all = document.querySelectorAll(".line");
       all.forEach((l, idx) => {
         if (idx < all.length - 1) l.classList.add("old");
@@ -202,15 +217,15 @@ function typeLine(text, done) {
   typeChar();
 }
 
-/* first line auto */
+/* first line */
 window.addEventListener("load", () => {
   setTimeout(() => {
     typeLine(lines[0]);
     step = 1;
-  }, 200);
+  }, 250);
 });
 
-/* tap progression */
+/* tap progression (mobile optimized) */
 document.body.addEventListener("click", () => {
   if (typing) return;
 
@@ -219,12 +234,12 @@ document.body.addEventListener("click", () => {
     step++;
 
     if (step === lines.length) {
-      setTimeout(showFinal, 300);
+      setTimeout(showFinal, 400);
     }
   }
 });
 
-/* final reveal */
+/* reveal final */
 function showFinal() {
   hint.style.display = "none";
   addressEl.textContent = ADDR;
