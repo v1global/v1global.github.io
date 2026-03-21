@@ -22,6 +22,21 @@ body {
   padding:20px;
 }
 
+/* subtle banner */
+.banner {
+  position:fixed;
+  top:40px;
+  width:100%;
+  text-align:center;
+  font-size:28px;
+  letter-spacing:0.25em;
+  font-weight:400;
+  opacity:0.08; /* very subtle */
+  pointer-events:none;
+  user-select:none;
+}
+
+/* layout */
 .stage {
   display:flex;
   flex-direction:column;
@@ -84,14 +99,12 @@ body {
 
 .address-container.show { opacity:1; }
 
-/* NEW subtle label */
 .address-label {
   font-size:11px;
   letter-spacing:0.12em;
   opacity:0.5;
 }
 
-/* address bubble */
 .address {
   font-size:15px;
   font-weight:600;
@@ -101,7 +114,6 @@ body {
   word-break:break-all;
 }
 
-/* copy button (restored smaller feel) */
 .copy {
   padding:8px 14px;
   font-size:13px;
@@ -149,14 +161,14 @@ body {
 
 <body>
 
+<div class="banner">V1 | THE ONE</div>
+
 <div class="stage">
   <div id="chat" class="chat"></div>
   <div id="hint" class="hint">tap →</div>
 
   <div id="addressBlock" class="address-container">
-    
     <div class="address-label">SOLANA ADDRESS</div>
-    
     <div id="address" class="address"></div>
     <button id="copyBtn" class="copy">copy</button>
   </div>
@@ -205,10 +217,8 @@ function typeLine(text, done) {
 
     if (i < text.length) {
       let speed = 18 + Math.random() * 20;
-
       if (text[i-1] === ".") speed += 120;
       if (text[i-1] === ",") speed += 60;
-
       setTimeout(typeChar, speed);
     } else {
       el.classList.add("done");
