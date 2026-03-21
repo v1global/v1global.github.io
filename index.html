@@ -21,7 +21,6 @@ body {
   padding:20px;
 }
 
-/* layout */
 .stage {
   display:flex;
   flex-direction:column;
@@ -31,7 +30,6 @@ body {
   transform: translateY(20px);
 }
 
-/* chat */
 .chat {
   display:flex;
   flex-direction:column;
@@ -44,7 +42,6 @@ body {
   opacity:0;
   transform:translateY(6px);
   transition:all .25s ease;
-  text-align:left;
 }
 
 .line.show {
@@ -56,12 +53,11 @@ body {
   opacity:0.35;
 }
 
-/* hint */
 .hint {
   font-size:14px;
   opacity:0.65;
   text-align:left;
-  animation: pulse 1.6s infinite;
+  animation:pulse 1.6s infinite;
 }
 
 @keyframes pulse {
@@ -69,20 +65,16 @@ body {
   50% { opacity:0.9; }
 }
 
-/* address */
 .address-container {
   display:flex;
   flex-direction:column;
-  align-items:flex-start;
   gap:8px;
   margin-top:12px;
   opacity:0;
   transition:opacity .3s ease;
 }
 
-.address-container.show {
-  opacity:1;
-}
+.address-container.show { opacity:1; }
 
 .address {
   font-size:16px;
@@ -91,10 +83,8 @@ body {
   padding:12px 16px;
   border-radius:14px;
   word-break:break-all;
-  width:100%;
 }
 
-/* copy */
 .copy {
   padding:10px 18px;
   font-size:14px;
@@ -107,15 +97,12 @@ body {
 
 .copy:active { transform:scale(0.95); }
 
-.copy.done {
-  background:#ffaa70;
-}
+.copy.done { background:#ffaa70; }
 
-/* wallet buttons (moved lower + smaller) */
+/* wallet zone */
 .wallet-zone {
   position:fixed;
   bottom:40px;
-  left:0;
   width:100%;
   display:flex;
   justify-content:center;
@@ -139,10 +126,6 @@ body {
   opacity:1;
   transform:translateY(0);
 }
-
-.wallet-zone button:active {
-  transform:scale(0.95);
-}
 </style>
 </head>
 <body>
@@ -157,7 +140,6 @@ body {
   </div>
 </div>
 
-<!-- wallet buttons moved OUTSIDE flow -->
 <div id="walletZone" class="wallet-zone">
   <button id="phantomBtn">Open Phantom</button>
   <button id="metaBtn">Open MetaMask</button>
@@ -183,19 +165,27 @@ const copyBtn = document.getElementById("copyBtn");
 const walletZone = document.getElementById("walletZone");
 
 let step = 0;
+let typing = false;
 
-/* clean typing effect */
+/* FIXED typing effect */
 function typeLine(text, done) {
+  if (typing) return;
+  typing = true;
+
   const el = document.createElement("div");
   el.className = "line";
+  const textNode = document.createTextNode("");
+  el.appendChild(textNode);
   chat.appendChild(el);
 
   let i = 0;
-  function tick() {
-    el.textContent += text[i];
+
+  function typeChar() {
+    textNode.nodeValue += text.charAt(i);
     i++;
+
     if (i < text.length) {
-      setTimeout(tick, 18); // fast typing
+      setTimeout(typeChar, 28); // tuned speed
     } else {
       el.classList.add("show");
 
@@ -204,20 +194,26 @@ function typeLine(text, done) {
         if (idx < all.length - 1) l.classList.add("old");
       });
 
+      typing = false;
       if (done) done();
     }
   }
-  tick();
+
+  typeChar();
 }
 
 /* first line auto */
 window.addEventListener("load", () => {
-  typeLine(lines[0]);
-  step = 1;
+  setTimeout(() => {
+    typeLine(lines[0]);
+    step = 1;
+  }, 200);
 });
 
-/* tap for rest */
+/* tap progression */
 document.body.addEventListener("click", () => {
+  if (typing) return;
+
   if (step < lines.length) {
     typeLine(lines[step]);
     step++;
@@ -228,7 +224,7 @@ document.body.addEventListener("click", () => {
   }
 });
 
-/* final */
+/* final reveal */
 function showFinal() {
   hint.style.display = "none";
   addressEl.textContent = ADDR;
