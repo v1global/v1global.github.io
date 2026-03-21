@@ -35,16 +35,18 @@ body {
 .chat {
   display:flex;
   flex-direction:column;
-  gap:6px;
+  gap:8px; /* slightly more spacing for chat feel */
 }
 
-/* typing text font updated to Inconsolata */
+/* typing text font updated to Inconsolata with chat sizing */
 .line {
   font-family: 'Inconsolata', monospace;
-  font-size:17px; /* readable, chat-like */
-  line-height:1.4;
-  letter-spacing:0.03em; 
+  font-size:18px; /* slightly bigger */
+  font-weight:500; /* slightly thicker */
+  line-height:1.5;
+  letter-spacing:0.02em; 
   color:#ff7a2a;
+  margin-left:4px; /* subtle chat indent */
 }
 
 .line.old {
@@ -199,32 +201,35 @@ function typeLine(text, done) {
 
   const el = document.createElement("div");
   el.className = "line";
+  el.textContent = "V1: " + text; // prefix for chat feel
   chat.appendChild(el);
 
-  let i = 0;
-
-  function typeChar() {
-    el.textContent = text.slice(0, i + 1);
-    i++;
-
-    if (i < text.length) {
-      let speed = 18 + Math.random() * 20;
-      if (text[i-1] === ".") speed += 120;
-      if (text[i-1] === ",") speed += 60;
-      setTimeout(typeChar, speed);
-    } else {
-      el.classList.add("done");
-
-      const all = document.querySelectorAll(".line");
-      all.forEach((l, idx) => {
-        if (idx < all.length - 1) l.classList.add("old");
-      });
-
-      typing = false;
-      if (done) done();
-    }
+  let i = el.textContent.length; // cursor appears after full line
+  const doneTyping = () => {
+    el.classList.add("done");
+    const all = document.querySelectorAll(".line");
+    all.forEach((l, idx) => {
+      if (idx < all.length - 1) l.classList.add("old");
+    });
+    typing = false;
+    if (done) done();
   }
 
+  // optional: still animate character by character
+  el.textContent = "V1: ";
+  let iChar = 0;
+  function typeChar() {
+    iChar++;
+    el.textContent = "V1: " + text.slice(0, iChar);
+    if (iChar < text.length) {
+      let speed = 18 + Math.random() * 20;
+      if (text[iChar-1] === ".") speed += 120;
+      if (text[iChar-1] === ",") speed += 60;
+      setTimeout(typeChar, speed);
+    } else {
+      doneTyping();
+    }
+  }
   typeChar();
 }
 
@@ -237,11 +242,9 @@ window.addEventListener("load", () => {
 
 document.body.addEventListener("click", () => {
   if (typing) return;
-
   if (step < lines.length) {
     typeLine(lines[step]);
     step++;
-
     if (step === lines.length) {
       setTimeout(showFinal, 400);
     }
@@ -252,17 +255,12 @@ function showFinal() {
   hint.style.display = "none";
   addressEl.textContent = ADDR;
   addressBlock.classList.add("show");
-
-  setTimeout(() => {
-    walletZone.classList.add("show");
-  }, 400);
+  setTimeout(() => { walletZone.classList.add("show"); }, 400);
 }
 
 copyBtn.addEventListener("click", (e) => {
   e.stopPropagation();
-
   if (navigator.vibrate) navigator.vibrate(50);
-
   navigator.clipboard.writeText(ADDR).then(() => {
     copyBtn.textContent = "Copied";
     copyBtn.classList.add("done");
@@ -272,7 +270,6 @@ copyBtn.addEventListener("click", (e) => {
 document.getElementById("phantomBtn").onclick = () => {
   window.location.href = `https://phantom.app/ul/browse/${ADDR}`;
 };
-
 document.getElementById("metaBtn").onclick = () => {
   window.location.href = `https://metamask.app.link/send/${ADDR}`;
 };
