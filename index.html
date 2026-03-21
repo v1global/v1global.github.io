@@ -2,29 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>V1</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
   height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#f5f5f5;
   font-family:'DM Mono', monospace;
   overflow:hidden;
+  background:#f5f5f5;
   color:#ff7a2a;
-  -webkit-tap-highlight-color: transparent;
-  padding:20px;
 }
 
-/* --- INTRO (ultra-lightweight) --- */
-#presence {
+/* PREMIUM ENTRY */
+#entry {
   position:fixed;
   inset:0;
   display:flex;
@@ -32,34 +26,23 @@ body {
   justify-content:center;
   background:#f5f5f5;
   z-index:999;
+  transition: all 0.8s ease;
 }
 
-.presence-inner {
-  text-align:center;
+#entry.hide {
   opacity:0;
-  transform:scale(0.98);
-  transition:all 0.4s ease;
+  transform:scale(0.9);
+  pointer-events:none;
 }
 
-.presence-main {
-  font-family:'Space Grotesk', sans-serif;
-  font-size:52px;
+#entry .v1-logo {
+  font-size:10vw;
+  font-weight:700;
+  color:#ff7a2a;
   letter-spacing:0.18em;
-  color:#ff7a2a;
-  opacity:0;
-  transform:translateY(6px);
-  transition:all 0.35s ease;
-  font-weight:600;
-}
-
-.presence-sub {
-  margin-top:8px;
-  font-family:'Space Grotesk', sans-serif;
-  font-size:13px;
-  letter-spacing:0.5em;
-  color:#ff7a2a;
-  opacity:0;
-  transition:opacity 0.3s ease;
+  text-align:center;
+  line-height:1;
+  text-shadow:0 0 12px rgba(255,122,42,0.5);
 }
 
 /* layout */
@@ -69,8 +52,12 @@ body {
   gap:16px;
   width:100%;
   max-width:360px;
-  transform: translateY(24px);
+  transform: translateY(24px); /* slight downward shift */
+  opacity:0;
+  transition:opacity 0.8s ease;
 }
+
+.stage.show { opacity:1; }
 
 .chat {
   display:flex;
@@ -95,14 +82,9 @@ body {
   animation:blink 1s infinite;
 }
 
-.line.done::after {
-  content:"";
-}
+.line.done::after { content:""; }
 
-@keyframes blink {
-  0%,100% { opacity:1; }
-  50% { opacity:0; }
-}
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
 
 .hint {
   font-size:14px;
@@ -110,10 +92,7 @@ body {
   animation:pulse 1.6s infinite;
 }
 
-@keyframes pulse {
-  0%,100% { opacity:0.65; }
-  50% { opacity:0.95; }
-}
+@keyframes pulse { 0%,100% { opacity:0.65; } 50% { opacity:0.95; } }
 
 /* address */
 .address-container {
@@ -190,14 +169,12 @@ body {
 
 <body>
 
-<!-- INTRO -->
-<div id="presence">
-  <div class="presence-inner">
-    <div class="presence-main">V1</div>
-    <div class="presence-sub">THE ONE</div>
-  </div>
+<!-- PREMIUM ENTRY -->
+<div id="entry">
+  <div class="v1-logo">V1</div>
 </div>
 
+<!-- MAIN CHAT -->
 <div class="stage">
   <div id="chat" class="chat"></div>
   <div id="hint" class="hint">tap →</div>
@@ -232,35 +209,11 @@ const addressBlock = document.getElementById("addressBlock");
 const addressEl = document.getElementById("address");
 const copyBtn = document.getElementById("copyBtn");
 const walletZone = document.getElementById("walletZone");
+const stage = document.querySelector(".stage");
+const entry = document.getElementById("entry");
 
 let step = 0;
 let typing = false;
-
-/* lightweight intro */
-function runPresence() {
-  const wrap = document.getElementById("presence");
-  const inner = wrap.querySelector(".presence-inner");
-  const main = wrap.querySelector(".presence-main");
-  const sub = wrap.querySelector(".presence-sub");
-
-  inner.style.opacity = "1";
-  inner.style.transform = "scale(1)";
-
-  setTimeout(() => {
-    main.style.opacity = "1";
-    main.style.transform = "translateY(0)";
-  }, 200);
-
-  setTimeout(() => {
-    sub.style.opacity = "0.85";
-  }, 400);
-
-  setTimeout(() => {
-    wrap.style.opacity = "0";
-  }, 900);
-
-  setTimeout(() => wrap.remove(), 1200);
-}
 
 function typeLine(text, done) {
   if (typing) return;
@@ -298,12 +251,18 @@ function typeLine(text, done) {
 }
 
 window.addEventListener("load", () => {
-  runPresence();
-
+  // premium entry first
   setTimeout(() => {
-    typeLine(lines[0]);
-    step = 1;
-  }, 1100);
+    entry.classList.add("hide");
+
+    setTimeout(() => {
+      entry.remove();
+      stage.classList.add("show");
+      typeLine(lines[0]);
+      step = 1;
+    }, 800);
+
+  }, 1200); // hold V1 for 1.2s
 });
 
 document.body.addEventListener("click", () => {
