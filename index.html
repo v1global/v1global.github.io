@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>V1</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Orbitron:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inconsolata&display=swap" rel="stylesheet">
 
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -38,10 +38,10 @@ body {
   gap:6px;
 }
 
-/* typing text font updated to Orbitron */
+/* typing text font updated to Inconsolata */
 .line {
-  font-family: 'Orbitron', monospace;
-  font-size:16px;
+  font-family: 'Inconsolata', monospace;
+  font-size:17px; /* readable, chat-like */
   line-height:1.4;
   letter-spacing:0.03em; 
   color:#ff7a2a;
@@ -157,16 +157,16 @@ body {
 
 <div class="stage">
   <div id="chat" class="chat"></div>
-  <div class="hint" id="hint">tap →</div>
+  <div id="hint" class="hint">tap →</div>
 
-  <div class="address-container" id="addressBlock">
+  <div id="addressBlock" class="address-container">
     <div class="address-label">V1’S SOLANA ADDRESS</div>
-    <div class="address" id="address"></div>
-    <button class="copy" id="copyBtn">Copy</button>
+    <div id="address" class="address"></div>
+    <button id="copyBtn" class="copy">Copy</button>
   </div>
 </div>
 
-<div class="wallet-zone" id="walletZone">
+<div id="walletZone" class="wallet-zone">
   <button id="phantomBtn">Open Phantom</button>
   <button id="metaBtn">Open MetaMask</button>
 </div>
@@ -260,7 +260,9 @@ function showFinal() {
 
 copyBtn.addEventListener("click", (e) => {
   e.stopPropagation();
+
   if (navigator.vibrate) navigator.vibrate(50);
+
   navigator.clipboard.writeText(ADDR).then(() => {
     copyBtn.textContent = "Copied";
     copyBtn.classList.add("done");
