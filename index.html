@@ -29,7 +29,7 @@ body {
   gap:16px;
   width:100%;
   max-width:360px;
-  transform: translateY(24px); /* slight downward shift */
+  transform: translateY(24px);
 }
 
 .chat {
@@ -41,6 +41,10 @@ body {
 .line {
   font-size:16px;
   line-height:1.4;
+  letter-spacing:0.03em;  /* slightly techy spacing */
+  color:#ff7a2a;
+  text-shadow:0 0 1px #ff7a2a;  /* subtle digital glow */
+  font-feature-settings:"zero" on; /* digital zero style */
 }
 
 .line.old {
@@ -90,7 +94,7 @@ body {
 .address-label {
   font-size:12px;
   letter-spacing:0.14em;
-  opacity:0.85; /* slightly higher */
+  opacity:0.85; 
   font-weight:500;
 }
 
@@ -103,7 +107,7 @@ body {
   word-break:break-all;
 }
 
-/* copy (slightly bigger) */
+/* copy button */
 .copy {
   padding:10px 18px;
   font-size:14px;
@@ -119,10 +123,10 @@ body {
 
 .copy.done { background:#ffaa70; }
 
-/* wallet buttons now same size as copy */
+/* wallet buttons same size as copy */
 .wallet-zone {
   position:fixed;
-  bottom:32px; /* slightly lower */
+  bottom:32px;
   width:100%;
   display:flex;
   justify-content:center;
@@ -130,8 +134,8 @@ body {
 }
 
 .wallet-zone button {
-  padding:10px 18px; /* match copy */
-  font-size:14px;     /* match copy */
+  padding:10px 18px;
+  font-size:14px;
   border:none;
   border-radius:999px;
   background:#ff7a2a;
@@ -156,7 +160,7 @@ body {
   <div id="hint" class="hint">tap →</div>
 
   <div id="addressBlock" class="address-container">
-    <div class="address-label">V1 SOLANA ADDRESS</div>
+    <div class="address-label">V1’S SOLANA ADDRESS</div>
     <div id="address" class="address"></div>
     <button id="copyBtn" class="copy">Copy</button>
   </div>
