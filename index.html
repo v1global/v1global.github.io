@@ -22,35 +22,20 @@ body {
   padding:20px;
 }
 
-/* layout (slightly lower) */
+/* layout */
 .stage {
   display:flex;
   flex-direction:column;
   gap:16px;
   width:100%;
   max-width:360px;
-  transform: translateY(30px);
+  transform: translateY(24px); /* slight downward shift */
 }
 
-/* chat wrapper */
-.chat-wrap {
-  display:flex;
-  gap:8px;
-}
-
-/* V1 label */
-.v1-label {
-  font-size:16px;
-  opacity:0.7;
-  white-space:nowrap;
-}
-
-/* chat column */
 .chat {
   display:flex;
   flex-direction:column;
   gap:6px;
-  flex:1;
 }
 
 .line {
@@ -83,7 +68,6 @@ body {
   font-size:14px;
   opacity:0.7;
   animation:pulse 1.6s infinite;
-  margin-left:24px; /* aligns under text */
 }
 
 @keyframes pulse {
@@ -99,7 +83,6 @@ body {
   margin-top:12px;
   opacity:0;
   transition:opacity .3s ease;
-  margin-left:24px;
 }
 
 .address-container.show { opacity:1; }
@@ -136,10 +119,10 @@ body {
 
 .copy.done { background:#ffaa70; }
 
-/* wallet buttons (slightly lower) */
+/* wallet buttons */
 .wallet-zone {
   position:fixed;
-  bottom:30px;
+  bottom:32px; /* slightly lower */
   width:100%;
   display:flex;
   justify-content:center;
@@ -169,12 +152,7 @@ body {
 <body>
 
 <div class="stage">
-
-  <div class="chat-wrap">
-    <div class="v1-label">V1:</div>
-    <div id="chat" class="chat"></div>
-  </div>
-
+  <div id="chat" class="chat"></div>
   <div id="hint" class="hint">tap →</div>
 
   <div id="addressBlock" class="address-container">
@@ -182,7 +160,6 @@ body {
     <div id="address" class="address"></div>
     <button id="copyBtn" class="copy">copy</button>
   </div>
-
 </div>
 
 <div id="walletZone" class="wallet-zone">
