@@ -44,7 +44,6 @@ body {
   line-height:1.5;
   letter-spacing:0.02em;
   color:#ff7a2a;
-  margin-left:4px;
 }
 
 .line.old {
@@ -197,13 +196,11 @@ function typeLine(text, done) {
   el.className = "line";
   chat.appendChild(el);
 
-  let lineText = (step === 0 ? "V1: " + text : text); // only prefix first line
-  el.textContent = "V1: "; // start for typing effect if first line
   let iChar = 0;
 
   function typeChar() {
     iChar++;
-    el.textContent = (step === 0 ? "V1: " : "") + text.slice(0, iChar);
+    el.textContent = text.slice(0, iChar);
     if (iChar < text.length) {
       let speed = 18 + Math.random() * 20;
       if (text[iChar-1] === ".") speed += 120;
