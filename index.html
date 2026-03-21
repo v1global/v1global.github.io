@@ -22,7 +22,6 @@ body {
   padding:20px;
 }
 
-/* layout */
 .stage {
   display:flex;
   flex-direction:column;
@@ -35,18 +34,17 @@ body {
 .chat {
   display:flex;
   flex-direction:column;
-  gap:8px; /* slightly more spacing for chat feel */
+  gap:8px;
 }
 
-/* typing text font updated to Inconsolata with chat sizing */
 .line {
   font-family: 'Inconsolata', monospace;
-  font-size:18px; /* slightly bigger */
-  font-weight:500; /* slightly thicker */
+  font-size:18px;
+  font-weight:500;
   line-height:1.5;
-  letter-spacing:0.02em; 
+  letter-spacing:0.02em;
   color:#ff7a2a;
-  margin-left:4px; /* subtle chat indent */
+  margin-left:4px;
 }
 
 .line.old {
@@ -54,7 +52,6 @@ body {
   transition:opacity .25s ease;
 }
 
-/* cursor */
 .line::after {
   content:"|";
   margin-left:2px;
@@ -81,7 +78,6 @@ body {
   50% { opacity:0.95; }
 }
 
-/* address */
 .address-container {
   display:flex;
   flex-direction:column;
@@ -109,7 +105,6 @@ body {
   word-break:break-all;
 }
 
-/* copy button */
 .copy {
   padding:10px 18px;
   font-size:14px;
@@ -125,7 +120,6 @@ body {
 
 .copy.done { background:#ffaa70; }
 
-/* wallet buttons same size as copy */
 .wallet-zone {
   position:fixed;
   bottom:32px;
@@ -201,35 +195,31 @@ function typeLine(text, done) {
 
   const el = document.createElement("div");
   el.className = "line";
-  el.textContent = "V1: " + text; // prefix for chat feel
   chat.appendChild(el);
 
-  let i = el.textContent.length; // cursor appears after full line
-  const doneTyping = () => {
-    el.classList.add("done");
-    const all = document.querySelectorAll(".line");
-    all.forEach((l, idx) => {
-      if (idx < all.length - 1) l.classList.add("old");
-    });
-    typing = false;
-    if (done) done();
-  }
-
-  // optional: still animate character by character
-  el.textContent = "V1: ";
+  let lineText = (step === 0 ? "V1: " + text : text); // only prefix first line
+  el.textContent = "V1: "; // start for typing effect if first line
   let iChar = 0;
+
   function typeChar() {
     iChar++;
-    el.textContent = "V1: " + text.slice(0, iChar);
+    el.textContent = (step === 0 ? "V1: " : "") + text.slice(0, iChar);
     if (iChar < text.length) {
       let speed = 18 + Math.random() * 20;
       if (text[iChar-1] === ".") speed += 120;
       if (text[iChar-1] === ",") speed += 60;
       setTimeout(typeChar, speed);
     } else {
-      doneTyping();
+      el.classList.add("done");
+      const all = document.querySelectorAll(".line");
+      all.forEach((l, idx) => {
+        if (idx < all.length - 1) l.classList.add("old");
+      });
+      typing = false;
+      if (done) done();
     }
   }
+
   typeChar();
 }
 
@@ -245,9 +235,7 @@ document.body.addEventListener("click", () => {
   if (step < lines.length) {
     typeLine(lines[step]);
     step++;
-    if (step === lines.length) {
-      setTimeout(showFinal, 400);
-    }
+    if (step === lines.length) setTimeout(showFinal, 400);
   }
 });
 
