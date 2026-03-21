@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>V1</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
@@ -11,14 +11,19 @@
 
 body {
   height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f5f5f5;
   font-family:'DM Mono', monospace;
   overflow:hidden;
-  background:#f5f5f5;
   color:#ff7a2a;
+  -webkit-tap-highlight-color: transparent;
+  padding:20px;
 }
 
-/* PREMIUM ENTRY */
-#entry {
+/* ----- PREMIUM ENTRY OVERLAY ----- */
+#entryOverlay {
   position:fixed;
   inset:0;
   display:flex;
@@ -26,25 +31,39 @@ body {
   justify-content:center;
   background:#f5f5f5;
   z-index:999;
-  transition: all 0.8s ease;
-}
-
-#entry.hide {
-  opacity:0;
-  transform:scale(0.9);
   pointer-events:none;
 }
 
-#entry .v1-logo {
+#entryOverlay .v1-bold {
   font-size:10vw;
-  font-weight:700;
+  font-weight:900;
   color:#ff7a2a;
   letter-spacing:0.18em;
   text-align:center;
   line-height:1;
   text-shadow:0 0 12px rgba(255,122,42,0.5);
+  opacity:0;
+  transform:scale(0.92);
+  animation:fadeIn 0.8s ease forwards, breathe 1.2s ease-in-out 0.8s 1;
 }
 
+@keyframes fadeIn {
+  to { opacity:1; transform:scale(1); }
+}
+
+@keyframes breathe {
+  0% { transform:scale(1); }
+  50% { transform:scale(1.02); }
+  100% { transform:scale(1); }
+}
+
+#entryOverlay.hide {
+  opacity:0;
+  transform:scale(0.95);
+  transition:all 0.6s ease;
+}
+
+/* ----- YOUR ORIGINAL PAGE STYLES BELOW (unchanged) ----- */
 /* layout */
 .stage {
   display:flex;
@@ -52,49 +71,28 @@ body {
   gap:16px;
   width:100%;
   max-width:360px;
-  transform: translateY(24px); /* slight downward shift */
+  transform: translateY(24px);
   opacity:0;
   transition:opacity 0.8s ease;
 }
 
 .stage.show { opacity:1; }
 
-.chat {
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
+.chat { display:flex; flex-direction:column; gap:6px; }
 
-.line {
-  font-size:16px;
-  line-height:1.4;
-}
+.line { font-size:16px; line-height:1.4; }
 
-.line.old {
-  opacity:0.35;
-  transition:opacity .25s ease;
-}
+.line.old { opacity:0.35; transition:opacity .25s ease; }
 
-/* cursor */
-.line::after {
-  content:"|";
-  margin-left:2px;
-  animation:blink 1s infinite;
-}
-
+.line::after { content:"|"; margin-left:2px; animation:blink 1s infinite; }
 .line.done::after { content:""; }
 
 @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
 
-.hint {
-  font-size:14px;
-  opacity:0.7;
-  animation:pulse 1.6s infinite;
-}
+.hint { font-size:14px; opacity:0.7; animation:pulse 1.6s infinite; }
 
 @keyframes pulse { 0%,100% { opacity:0.65; } 50% { opacity:0.95; } }
 
-/* address */
 .address-container {
   display:flex;
   flex-direction:column;
@@ -106,75 +104,30 @@ body {
 
 .address-container.show { opacity:1; }
 
-.address-label {
-  font-size:12px;
-  letter-spacing:0.14em;
-  opacity:0.75;
-  font-weight:500;
-}
+.address-label { font-size:12px; letter-spacing:0.14em; opacity:0.75; font-weight:500; }
 
-.address {
-  font-size:15px;
-  font-weight:600;
-  background:rgba(255,122,42,0.12);
-  padding:12px 16px;
-  border-radius:14px;
-  word-break:break-all;
-}
+.address { font-size:15px; font-weight:600; background:rgba(255,122,42,0.12); padding:12px 16px; border-radius:14px; word-break:break-all; }
 
-/* copy */
-.copy {
-  padding:10px 18px;
-  font-size:14px;
-  border:none;
-  border-radius:999px;
-  background:#ff7a2a;
-  color:#fff;
-  cursor:pointer;
-  align-self:flex-start;
-}
-
+.copy { padding:10px 18px; font-size:14px; border:none; border-radius:999px; background:#ff7a2a; color:#fff; cursor:pointer; align-self:flex-start; }
 .copy:active { transform:scale(0.95); }
 .copy.done { background:#ffaa70; }
 
-/* wallet buttons */
-.wallet-zone {
-  position:fixed;
-  bottom:32px;
-  width:100%;
-  display:flex;
-  justify-content:center;
-  gap:10px;
-}
+.wallet-zone { position:fixed; bottom:32px; width:100%; display:flex; justify-content:center; gap:10px; }
 
-.wallet-zone button {
-  padding:8px 14px;
-  font-size:13px;
-  border:none;
-  border-radius:999px;
-  background:#ff7a2a;
-  color:#fff;
-  cursor:pointer;
-  opacity:0;
-  transform:translateY(10px);
-  transition:all .3s ease;
-}
+.wallet-zone button { padding:8px 14px; font-size:13px; border:none; border-radius:999px; background:#ff7a2a; color:#fff; cursor:pointer; opacity:0; transform:translateY(10px); transition:all .3s ease; }
 
-.wallet-zone.show button {
-  opacity:1;
-  transform:translateY(0);
-}
+.wallet-zone.show button { opacity:1; transform:translateY(0); }
 </style>
 </head>
 
 <body>
 
 <!-- PREMIUM ENTRY -->
-<div id="entry">
-  <div class="v1-logo">V1</div>
+<div id="entryOverlay">
+  <div class="v1-bold">V1</div>
 </div>
 
-<!-- MAIN CHAT -->
+<!-- ORIGINAL PAGE -->
 <div class="stage">
   <div id="chat" class="chat"></div>
   <div id="hint" class="hint">tap →</div>
@@ -210,7 +163,7 @@ const addressEl = document.getElementById("address");
 const copyBtn = document.getElementById("copyBtn");
 const walletZone = document.getElementById("walletZone");
 const stage = document.querySelector(".stage");
-const entry = document.getElementById("entry");
+const entry = document.getElementById("entryOverlay");
 
 let step = 0;
 let typing = false;
@@ -251,59 +204,13 @@ function typeLine(text, done) {
 }
 
 window.addEventListener("load", () => {
-  // premium entry first
+  // fade out premium entry overlay first
   setTimeout(() => {
     entry.classList.add("hide");
-
     setTimeout(() => {
       entry.remove();
+      // reveal chat stage
       stage.classList.add("show");
       typeLine(lines[0]);
       step = 1;
-    }, 800);
-
-  }, 1200); // hold V1 for 1.2s
-});
-
-document.body.addEventListener("click", () => {
-  if (typing) return;
-
-  if (step < lines.length) {
-    typeLine(lines[step]);
-    step++;
-
-    if (step === lines.length) {
-      setTimeout(showFinal, 400);
-    }
-  }
-});
-
-function showFinal() {
-  hint.style.display = "none";
-  addressEl.textContent = ADDR;
-  addressBlock.classList.add("show");
-
-  setTimeout(() => {
-    walletZone.classList.add("show");
-  }, 400);
-}
-
-copyBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  navigator.clipboard.writeText(ADDR).then(() => {
-    copyBtn.textContent = "copied.";
-    copyBtn.classList.add("done");
-  });
-});
-
-document.getElementById("phantomBtn").onclick = () => {
-  window.location.href = `https://phantom.app/ul/browse/${ADDR}`;
-};
-
-document.getElementById("metaBtn").onclick = () => {
-  window.location.href = `https://metamask.app.link/send/${ADDR}`;
-};
-</script>
-
-</body>
-</html>
+    }, 600);
