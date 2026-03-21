@@ -41,7 +41,6 @@ body {
   line-height:1.4;
 }
 
-/* previous lines fade slightly */
 .line.old {
   opacity:0.35;
   transition:opacity .25s ease;
@@ -77,7 +76,7 @@ body {
 .address-container {
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:6px;
   margin-top:12px;
   opacity:0;
   transition:opacity .3s ease;
@@ -85,6 +84,14 @@ body {
 
 .address-container.show { opacity:1; }
 
+/* NEW subtle label */
+.address-label {
+  font-size:11px;
+  letter-spacing:0.12em;
+  opacity:0.5;
+}
+
+/* address bubble */
 .address {
   font-size:15px;
   font-weight:600;
@@ -94,14 +101,16 @@ body {
   word-break:break-all;
 }
 
+/* copy button (restored smaller feel) */
 .copy {
-  padding:10px 18px;
-  font-size:14px;
+  padding:8px 14px;
+  font-size:13px;
   border:none;
   border-radius:999px;
   background:#ff7a2a;
   color:#fff;
   cursor:pointer;
+  align-self:flex-start;
 }
 
 .copy:active { transform:scale(0.95); }
@@ -145,6 +154,9 @@ body {
   <div id="hint" class="hint">tap →</div>
 
   <div id="addressBlock" class="address-container">
+    
+    <div class="address-label">SOLANA ADDRESS</div>
+    
     <div id="address" class="address"></div>
     <button id="copyBtn" class="copy">copy</button>
   </div>
@@ -177,7 +189,6 @@ const walletZone = document.getElementById("walletZone");
 let step = 0;
 let typing = false;
 
-/* improved typing */
 function typeLine(text, done) {
   if (typing) return;
   typing = true;
@@ -195,15 +206,13 @@ function typeLine(text, done) {
     if (i < text.length) {
       let speed = 18 + Math.random() * 20;
 
-      // natural pauses
-      if (text[i-1] === "." || text[i-1] === "...") speed += 120;
+      if (text[i-1] === ".") speed += 120;
       if (text[i-1] === ",") speed += 60;
 
       setTimeout(typeChar, speed);
     } else {
       el.classList.add("done");
 
-      // fade previous lines
       const all = document.querySelectorAll(".line");
       all.forEach((l, idx) => {
         if (idx < all.length - 1) l.classList.add("old");
@@ -217,7 +226,6 @@ function typeLine(text, done) {
   typeChar();
 }
 
-/* first line */
 window.addEventListener("load", () => {
   setTimeout(() => {
     typeLine(lines[0]);
@@ -225,7 +233,6 @@ window.addEventListener("load", () => {
   }, 250);
 });
 
-/* tap progression (mobile optimized) */
 document.body.addEventListener("click", () => {
   if (typing) return;
 
@@ -239,7 +246,6 @@ document.body.addEventListener("click", () => {
   }
 });
 
-/* reveal final */
 function showFinal() {
   hint.style.display = "none";
   addressEl.textContent = ADDR;
@@ -250,7 +256,6 @@ function showFinal() {
   }, 400);
 }
 
-/* copy */
 copyBtn.addEventListener("click", (e) => {
   e.stopPropagation();
   navigator.clipboard.writeText(ADDR).then(() => {
@@ -259,7 +264,6 @@ copyBtn.addEventListener("click", (e) => {
   });
 });
 
-/* wallets */
 document.getElementById("phantomBtn").onclick = () => {
   window.location.href = `https://phantom.app/ul/browse/${ADDR}`;
 };
