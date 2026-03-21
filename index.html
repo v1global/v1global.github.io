@@ -18,66 +18,50 @@ body {
   font-family:'DM Mono', monospace;
   overflow:hidden;
   color:#ff7a2a;
+  -webkit-tap-highlight-color: transparent;
   padding:20px;
 }
 
-/* ===== ENTRY SCREEN ===== */
-.entry {
-  position:fixed;
-  inset:0;
-  background:#f5f5f5;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:10;
-  transition:opacity .6s ease;
-}
-
-.entry.hidden {
-  opacity:0;
-  pointer-events:none;
-}
-
-.entry-text {
-  font-size:32px;
-  letter-spacing:0.25em;
-  opacity:0;
-  transform:scale(0.95);
-  animation:enter 1.2s ease forwards;
-}
-
-@keyframes enter {
-  to {
-    opacity:0.8;
-    transform:scale(1);
-  }
-}
-
-/* ===== MAIN ===== */
+/* layout */
 .stage {
   display:flex;
   flex-direction:column;
   gap:16px;
   width:100%;
   max-width:360px;
-  transform:translateY(24px);
+  transform: translateY(24px); /* slight downward shift */
 }
 
-.chat { display:flex; flex-direction:column; gap:6px; }
+.chat {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
 
-.line { font-size:16px; }
+.line {
+  font-size:16px;
+  line-height:1.4;
+}
 
-.line.old { opacity:0.35; transition:.25s; }
+.line.old {
+  opacity:0.35;
+  transition:opacity .25s ease;
+}
 
+/* cursor */
 .line::after {
   content:"|";
+  margin-left:2px;
   animation:blink 1s infinite;
 }
 
-.line.done::after { content:""; }
+.line.done::after {
+  content:"";
+}
 
 @keyframes blink {
-  0%,100%{opacity:1;}50%{opacity:0;}
+  0%,100% { opacity:1; }
+  50% { opacity:0; }
 }
 
 .hint {
@@ -87,7 +71,8 @@ body {
 }
 
 @keyframes pulse {
-  0%,100%{opacity:0.6;}50%{opacity:0.95;}
+  0%,100% { opacity:0.65; }
+  50% { opacity:0.95; }
 }
 
 /* address */
@@ -97,7 +82,7 @@ body {
   gap:6px;
   margin-top:12px;
   opacity:0;
-  transition:.3s;
+  transition:opacity .3s ease;
 }
 
 .address-container.show { opacity:1; }
@@ -118,7 +103,7 @@ body {
   word-break:break-all;
 }
 
-/* ===== COPY BUTTON (dopamine) ===== */
+/* copy (slightly bigger again) */
 .copy {
   padding:10px 18px;
   font-size:14px;
@@ -128,31 +113,16 @@ body {
   color:#fff;
   cursor:pointer;
   align-self:flex-start;
-  transition:transform .15s ease, box-shadow .2s ease;
 }
 
-.copy:active {
-  transform:scale(0.95);
-}
+.copy:active { transform:scale(0.95); }
 
-.copy.pop {
-  animation:pop .35s ease;
-}
+.copy.done { background:#ffaa70; }
 
-@keyframes pop {
-  0% { transform:scale(1); }
-  40% { transform:scale(1.15); box-shadow:0 0 20px rgba(255,122,42,0.5); }
-  100% { transform:scale(1); }
-}
-
-.copy.done {
-  background:#ffaa70;
-}
-
-/* wallet */
+/* wallet buttons */
 .wallet-zone {
   position:fixed;
-  bottom:32px;
+  bottom:32px; /* slightly lower */
   width:100%;
   display:flex;
   justify-content:center;
@@ -166,9 +136,10 @@ body {
   border-radius:999px;
   background:#ff7a2a;
   color:#fff;
+  cursor:pointer;
   opacity:0;
   transform:translateY(10px);
-  transition:.3s;
+  transition:all .3s ease;
 }
 
 .wallet-zone.show button {
@@ -179,11 +150,6 @@ body {
 </head>
 
 <body>
-
-<!-- ENTRY -->
-<div id="entry" class="entry">
-  <div class="entry-text">V1 | THE ONE</div>
-</div>
 
 <div class="stage">
   <div id="chat" class="chat"></div>
@@ -208,11 +174,11 @@ const lines = [
   "what’s up.",
   "you found me.",
   "not many do.",
+  "this is a solana address.",
   "if you want to send something...",
   "i’ll give it to you."
 ];
 
-const entry = document.getElementById("entry");
 const chat = document.getElementById("chat");
 const hint = document.getElementById("hint");
 const addressBlock = document.getElementById("addressBlock");
@@ -222,23 +188,8 @@ const walletZone = document.getElementById("walletZone");
 
 let step = 0;
 let typing = false;
-let started = false;
 
-/* ENTRY TAP */
-entry.addEventListener("click", () => {
-  entry.classList.add("hidden");
-  setTimeout(startFlow, 400);
-});
-
-function startFlow() {
-  if (started) return;
-  started = true;
-  typeLine(lines[0]);
-  step = 1;
-}
-
-/* typing */
-function typeLine(text) {
+function typeLine(text, done) {
   if (typing) return;
   typing = true;
 
@@ -248,27 +199,40 @@ function typeLine(text) {
 
   let i = 0;
 
-  function tick() {
-    el.textContent = text.slice(0, i+1);
+  function typeChar() {
+    el.textContent = text.slice(0, i + 1);
     i++;
+
     if (i < text.length) {
-      setTimeout(tick, 20);
+      let speed = 18 + Math.random() * 20;
+      if (text[i-1] === ".") speed += 120;
+      if (text[i-1] === ",") speed += 60;
+      setTimeout(typeChar, speed);
     } else {
       el.classList.add("done");
 
-      document.querySelectorAll(".line").forEach((l, idx, arr)=>{
-        if(idx < arr.length-1) l.classList.add("old");
+      const all = document.querySelectorAll(".line");
+      all.forEach((l, idx) => {
+        if (idx < all.length - 1) l.classList.add("old");
       });
 
       typing = false;
+      if (done) done();
     }
   }
-  tick();
+
+  typeChar();
 }
 
-/* taps */
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    typeLine(lines[0]);
+    step = 1;
+  }, 250);
+});
+
 document.body.addEventListener("click", () => {
-  if (!started || typing) return;
+  if (typing) return;
 
   if (step < lines.length) {
     typeLine(lines[step]);
@@ -280,32 +244,31 @@ document.body.addEventListener("click", () => {
   }
 });
 
-/* final */
 function showFinal() {
-  hint.style.display="none";
+  hint.style.display = "none";
   addressEl.textContent = ADDR;
   addressBlock.classList.add("show");
-  setTimeout(()=> walletZone.classList.add("show"), 400);
+
+  setTimeout(() => {
+    walletZone.classList.add("show");
+  }, 400);
 }
 
-/* COPY dopamine */
-copyBtn.addEventListener("click", (e)=>{
+copyBtn.addEventListener("click", (e) => {
   e.stopPropagation();
-
-  navigator.clipboard.writeText(ADDR).then(()=>{
-    copyBtn.textContent="copied.";
+  navigator.clipboard.writeText(ADDR).then(() => {
+    copyBtn.textContent = "copied.";
     copyBtn.classList.add("done");
-    copyBtn.classList.add("pop");
-
-    setTimeout(()=>{
-      copyBtn.classList.remove("pop");
-    }, 350);
   });
 });
 
-/* wallets */
-phantomBtn.onclick = ()=> location.href=`https://phantom.app/ul/browse/${ADDR}`;
-metaBtn.onclick = ()=> location.href=`https://metamask.app.link/send/${ADDR}`;
+document.getElementById("phantomBtn").onclick = () => {
+  window.location.href = `https://phantom.app/ul/browse/${ADDR}`;
+};
+
+document.getElementById("metaBtn").onclick = () => {
+  window.location.href = `https://metamask.app.link/send/${ADDR}`;
+};
 </script>
 
 </body>
