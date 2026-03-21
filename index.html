@@ -90,7 +90,7 @@ body {
 .address-label {
   font-size:12px;
   letter-spacing:0.14em;
-  opacity:0.75;
+  opacity:0.85; /* slightly higher */
   font-weight:500;
 }
 
@@ -156,9 +156,9 @@ body {
   <div id="hint" class="hint">tap →</div>
 
   <div id="addressBlock" class="address-container">
-    <div class="address-label">SOLANA ADDRESS</div>
+    <div class="address-label">V1’S SOLANA ADDRESS</div>
     <div id="address" class="address"></div>
-    <button id="copyBtn" class="copy">copy</button>
+    <button id="copyBtn" class="copy">Copy</button>
   </div>
 </div>
 
@@ -256,8 +256,12 @@ function showFinal() {
 
 copyBtn.addEventListener("click", (e) => {
   e.stopPropagation();
+
+  // Haptic feedback for mobile
+  if (navigator.vibrate) navigator.vibrate(50);
+
   navigator.clipboard.writeText(ADDR).then(() => {
-    copyBtn.textContent = "copied.";
+    copyBtn.textContent = "Copied";
     copyBtn.classList.add("done");
   });
 });
