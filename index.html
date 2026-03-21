@@ -39,8 +39,8 @@ body {
 
 .line {
   font-family: 'Inconsolata', monospace;
-  font-size:18px;
-  font-weight:500;
+  font-size:19px; /* slightly bigger */
+  font-weight:600; /* slightly thicker */
   line-height:1.5;
   letter-spacing:0.02em;
   color:#ff7a2a;
@@ -66,10 +66,13 @@ body {
   50% { opacity:0; }
 }
 
+/* hint reposition */
 .hint {
   font-size:14px;
   opacity:0.7;
   animation:pulse 1.6s infinite;
+  margin-top:8px;
+  text-align:center;
 }
 
 @keyframes pulse {
