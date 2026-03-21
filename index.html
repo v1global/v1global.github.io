@@ -4,7 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>V1</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -22,15 +23,14 @@ body {
   padding:20px;
 }
 
-/* --- subtle intro layer --- */
+/* --- INTRO (ultra-lightweight) --- */
 #presence {
   position:fixed;
   inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:rgba(245,245,245,0.6);
-  backdrop-filter: blur(6px);
+  background:#f5f5f5;
   z-index:999;
 }
 
@@ -38,25 +38,28 @@ body {
   text-align:center;
   opacity:0;
   transform:scale(0.98);
-  transition:all 0.5s ease;
+  transition:all 0.4s ease;
 }
 
 .presence-main {
-  font-size:48px;
+  font-family:'Space Grotesk', sans-serif;
+  font-size:52px;
   letter-spacing:0.18em;
-  color:#111;
+  color:#ff7a2a;
   opacity:0;
   transform:translateY(6px);
-  transition:all 0.45s ease;
+  transition:all 0.35s ease;
+  font-weight:600;
 }
 
 .presence-sub {
   margin-top:8px;
+  font-family:'Space Grotesk', sans-serif;
   font-size:13px;
   letter-spacing:0.5em;
-  color:#111;
+  color:#ff7a2a;
   opacity:0;
-  transition:opacity 0.4s ease;
+  transition:opacity 0.3s ease;
 }
 
 /* layout */
@@ -187,7 +190,7 @@ body {
 
 <body>
 
-<!-- subtle intro -->
+<!-- INTRO -->
 <div id="presence">
   <div class="presence-inner">
     <div class="presence-main">V1</div>
@@ -233,33 +236,30 @@ const walletZone = document.getElementById("walletZone");
 let step = 0;
 let typing = false;
 
-/* --- intro logic (lightweight) --- */
+/* lightweight intro */
 function runPresence() {
   const wrap = document.getElementById("presence");
   const inner = wrap.querySelector(".presence-inner");
   const main = wrap.querySelector(".presence-main");
   const sub = wrap.querySelector(".presence-sub");
 
-  setTimeout(() => {
-    inner.style.opacity = "1";
-    inner.style.transform = "scale(1)";
-  }, 100);
+  inner.style.opacity = "1";
+  inner.style.transform = "scale(1)";
 
   setTimeout(() => {
     main.style.opacity = "1";
     main.style.transform = "translateY(0)";
-  }, 350);
+  }, 200);
 
   setTimeout(() => {
     sub.style.opacity = "0.85";
-  }, 700);
+  }, 400);
 
   setTimeout(() => {
     wrap.style.opacity = "0";
-    wrap.style.backdropFilter = "blur(0px)";
-  }, 1300);
+  }, 900);
 
-  setTimeout(() => wrap.remove(), 1700);
+  setTimeout(() => wrap.remove(), 1200);
 }
 
 function typeLine(text, done) {
@@ -303,7 +303,7 @@ window.addEventListener("load", () => {
   setTimeout(() => {
     typeLine(lines[0]);
     step = 1;
-  }, 1600);
+  }, 1100);
 });
 
 document.body.addEventListener("click", () => {
