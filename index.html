@@ -29,6 +29,7 @@ body {
   width:100%;
   max-width:360px;
   transform: translateY(-12px);
+  position:relative;
 }
 
 .header {
@@ -158,6 +159,23 @@ body {
   opacity:1;
   transform:translateY(0);
 }
+
+/* Rocket */
+.rocket {
+  position:absolute;
+  font-size:24px;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:0;
+  opacity:0;
+  pointer-events:none;
+  transition: transform 1s ease-out, opacity 1s ease-out;
+}
+
+.rocket.fly {
+  transform:translate(-50%, -200px);
+  opacity:1;
+}
 </style>
 </head>
 
@@ -174,6 +192,8 @@ body {
     <div id="address" class="address"></div>
     <button id="copyBtn" class="copy">Copy</button>
   </div>
+
+  <div id="rocket" class="rocket">🚀</div>
 </div>
 
 <div id="walletZone" class="wallet-zone">
@@ -199,13 +219,13 @@ const addressBlock = document.getElementById("addressBlock");
 const addressEl = document.getElementById("address");
 const copyBtn = document.getElementById("copyBtn");
 const walletZone = document.getElementById("walletZone");
+const rocket = document.getElementById("rocket");
 
 let step = 0;
 let typing = false;
 
 function typeLine(text, done) {
   if (typing) return;
-  typing = true;
 
   // Fade previous lines immediately
   const allPrev = document.querySelectorAll(".line");
@@ -228,6 +248,15 @@ function typeLine(text, done) {
     } else {
       el.classList.add("done");
       typing = false;
+
+      // Trigger rocket on final line
+      if (step === lines.length - 1) {
+        rocket.classList.add("fly");
+        setTimeout(() => {
+          rocket.style.opacity = 0;
+        }, 1000);
+      }
+
       if (done) done();
     }
   }
