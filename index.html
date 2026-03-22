@@ -28,10 +28,9 @@ body {
   gap:12px;
   width:100%;
   max-width:360px;
-  transform: translateY(-12px); /* moved slightly up */
+  transform: translateY(-12px);
 }
 
-/* header */
 .header {
   font-size:13px;
   font-weight:700;
@@ -52,11 +51,11 @@ body {
   line-height:1.5;
   letter-spacing:0.02em;
   color:#ff7a2a;
+  transition: opacity 0.25s ease;
 }
 
 .line.old {
   opacity:0.35;
-  transition:opacity .25s ease;
 }
 
 .line::after {
@@ -102,7 +101,6 @@ body {
 
 .address-container.show { opacity:1; }
 
-/* matched style */
 .address-label {
   font-size:13px;
   font-weight:700;
@@ -166,8 +164,6 @@ body {
 <body>
 
 <div class="stage">
-
-  <!-- HEADER UPDATED -->
   <div class="header">V1:</div>
 
   <div id="chat" class="chat"></div>
@@ -211,6 +207,10 @@ function typeLine(text, done) {
   if (typing) return;
   typing = true;
 
+  // Fade previous lines immediately
+  const allPrev = document.querySelectorAll(".line");
+  allPrev.forEach(l => l.classList.add("old"));
+
   const el = document.createElement("div");
   el.className = "line";
   chat.appendChild(el);
@@ -227,10 +227,6 @@ function typeLine(text, done) {
       setTimeout(typeChar, speed);
     } else {
       el.classList.add("done");
-      const all = document.querySelectorAll(".line");
-      all.forEach((l, idx) => {
-        if (idx < all.length - 1) l.classList.add("old");
-      });
       typing = false;
       if (done) done();
     }
