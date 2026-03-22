@@ -66,17 +66,22 @@ body {
   50% { opacity:0; }
 }
 
+/* improved tap hint */
 .hint {
-  font-size:14px;
-  opacity:0.7;
+  align-self:center;
+  font-size:13px;
+  font-weight:500;
+  letter-spacing:0.08em;
+  padding:6px 14px;
+  border-radius:999px;
+  background:rgba(255,122,42,0.12);
+  opacity:0.75;
   animation:pulse 1.6s infinite;
-  margin-top:8px;
-  text-align:center;
 }
 
 @keyframes pulse {
-  0%,100% { opacity:0.65; }
-  50% { opacity:0.95; }
+  0%,100% { opacity:0.6; transform:scale(1); }
+  50% { opacity:1; transform:scale(1.05); }
 }
 
 .address-container {
@@ -154,7 +159,7 @@ body {
 
 <div class="stage">
   <div id="chat" class="chat"></div>
-  <div id="hint" class="hint">tap →</div>
+  <div id="hint" class="hint">tap</div>
 
   <div id="addressBlock" class="address-container">
     <div class="address-label">V1’S SOLANA ADDRESS</div>
@@ -174,9 +179,10 @@ const ADDR = "D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3";
 const lines = [
   "What’s up.",
   "You there?",
-  "On my way to Earth.",
+  "I’m on my way to Earth.",
   "The planet needs me.",
-  "Just need some fuel…"
+  "Just need a little extra fuel…",
+  "Counting on you."
 ];
 
 const chat = document.getElementById("chat");
