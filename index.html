@@ -28,9 +28,10 @@ body {
   gap:12px;
   width:100%;
   max-width:360px;
-  transform: translateY(24px);
+  transform: translateY(-12px); /* moved slightly up */
 }
 
+/* header */
 .header {
   font-size:13px;
   font-weight:700;
@@ -101,7 +102,7 @@ body {
 
 .address-container.show { opacity:1; }
 
-/* same style as header */
+/* matched style */
 .address-label {
   font-size:13px;
   font-weight:700;
@@ -166,13 +167,14 @@ body {
 
 <div class="stage">
 
-  <div class="header">V1</div>
+  <!-- HEADER UPDATED -->
+  <div class="header">V1:</div>
 
   <div id="chat" class="chat"></div>
   <div id="hint" class="hint">tap</div>
 
   <div id="addressBlock" class="address-container">
-    <div class="address-label">V1:</div>
+    <div class="address-label">SOLANA ADDRESS</div>
     <div id="address" class="address"></div>
     <button id="copyBtn" class="copy">Copy</button>
   </div>
