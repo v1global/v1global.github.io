@@ -25,10 +25,18 @@ body {
 .stage {
   display:flex;
   flex-direction:column;
-  gap:16px;
+  gap:12px;
   width:100%;
   max-width:360px;
   transform: translateY(24px);
+}
+
+/* NEW: header */
+.header {
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:0.12em;
+  opacity:0.9;
 }
 
 .chat {
@@ -157,6 +165,10 @@ body {
 <body>
 
 <div class="stage">
+
+  <!-- NEW HEADER -->
+  <div class="header">V1 | THE ONE</div>
+
   <div id="chat" class="chat"></div>
   <div id="hint" class="hint">tap</div>
 
