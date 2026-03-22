@@ -29,6 +29,7 @@ body {
   width:100%;
   max-width:360px;
   transform: translateY(-12px);
+  position:relative;
 }
 
 .header {
@@ -54,24 +55,12 @@ body {
   transition: opacity 0.25s ease;
 }
 
-.line.old {
-  opacity:0.35;
-}
+.line.old { opacity:0.35; }
 
-.line::after {
-  content:"|";
-  margin-left:2px;
-  animation:blink 1s infinite;
-}
+.line::after { content:"|"; margin-left:2px; animation:blink 1s infinite; }
+.line.done::after { content:""; }
 
-.line.done::after {
-  content:"";
-}
-
-@keyframes blink {
-  0%,100% { opacity:1; }
-  50% { opacity:0; }
-}
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
 
 .hint {
   align-self:center;
@@ -120,6 +109,7 @@ body {
 .copy {
   padding:10px 18px;
   font-size:14px;
+  font-weight:600;
   border:none;
   border-radius:999px;
   background:#ff7a2a;
@@ -129,7 +119,6 @@ body {
 }
 
 .copy:active { transform:scale(0.95); }
-
 .copy.done { background:#ffaa70; }
 
 .wallet-zone {
@@ -144,6 +133,7 @@ body {
 .wallet-zone button {
   padding:10px 18px;
   font-size:14px;
+  font-weight:600;
   border:none;
   border-radius:999px;
   background:#ff7a2a;
@@ -183,14 +173,13 @@ body {
 
 <script>
 const ADDR = "D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3";
-
 const lines = [
   "What’s up.",
   "You there?",
   "I’m on my way to Earth.",
   "The planet really needs me.",
-  "Could use some extra fuel...",
-  "Counting on you."
+  "Could use the extra fuel though…",
+  "Counting on you ;)"
 ];
 
 const chat = document.getElementById("chat");
@@ -205,11 +194,8 @@ let typing = false;
 
 function typeLine(text, done) {
   if (typing) return;
-  typing = true;
 
-  // Fade previous lines immediately
-  const allPrev = document.querySelectorAll(".line");
-  allPrev.forEach(l => l.classList.add("old"));
+  document.querySelectorAll(".line").forEach(l => l.classList.add("old"));
 
   const el = document.createElement("div");
   el.className = "line";
@@ -222,13 +208,13 @@ function typeLine(text, done) {
     el.textContent = text.slice(0, iChar);
     if (iChar < text.length) {
       let speed = 18 + Math.random() * 20;
-      if (text[iChar-1] === ".") speed += 120;
-      if (text[iChar-1] === ",") speed += 60;
+      if (text[iChar-1]===".") speed+=120;
+      if (text[iChar-1]===',') speed+=60;
       setTimeout(typeChar, speed);
     } else {
       el.classList.add("done");
-      typing = false;
-      if (done) done();
+      typing=false;
+      if(done) done();
     }
   }
 
@@ -236,43 +222,39 @@ function typeLine(text, done) {
 }
 
 window.addEventListener("load", () => {
-  setTimeout(() => {
+  setTimeout(()=>{
     typeLine(lines[0]);
-    step = 1;
-  }, 250);
+    step=1;
+  },250);
 });
 
-document.body.addEventListener("click", () => {
-  if (typing) return;
-  if (step < lines.length) {
+document.body.addEventListener("click", ()=>{
+  if(typing) return;
+  if(step<lines.length){
     typeLine(lines[step]);
     step++;
-    if (step === lines.length) setTimeout(showFinal, 400);
+    if(step===lines.length) setTimeout(showFinal,400);
   }
 });
 
-function showFinal() {
-  hint.style.display = "none";
-  addressEl.textContent = ADDR;
+function showFinal(){
+  hint.style.display="none";
+  addressEl.textContent=ADDR;
   addressBlock.classList.add("show");
-  setTimeout(() => { walletZone.classList.add("show"); }, 400);
+  setTimeout(()=>{walletZone.classList.add("show")},400);
 }
 
-copyBtn.addEventListener("click", (e) => {
+copyBtn.addEventListener("click",(e)=>{
   e.stopPropagation();
-  if (navigator.vibrate) navigator.vibrate(50);
-  navigator.clipboard.writeText(ADDR).then(() => {
-    copyBtn.textContent = "Copied";
+  if(navigator.vibrate) navigator.vibrate(50);
+  navigator.clipboard.writeText(ADDR).then(()=>{
+    copyBtn.textContent="Copied";
     copyBtn.classList.add("done");
   });
 });
 
-document.getElementById("phantomBtn").onclick = () => {
-  window.location.href = `https://phantom.app/ul/browse/${ADDR}`;
-};
-document.getElementById("metaBtn").onclick = () => {
-  window.location.href = `https://metamask.app.link/send/${ADDR}`;
-};
+document.getElementById("phantomBtn").onclick=()=>{window.location.href=`https://phantom.app/ul/browse/${ADDR}`};
+document.getElementById("metaBtn").onclick=()=>{window.location.href=`https://metamask.app.link/send/${ADDR}`};
 </script>
 
 </body>
