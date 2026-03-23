@@ -206,7 +206,6 @@ function typeLine(text, done) {
   if (typing) return;
   typing = true;
 
-  // Fade previous lines immediately
   const allPrev = document.querySelectorAll(".line");
   allPrev.forEach(l => l.classList.add("old"));
 
@@ -266,10 +265,12 @@ copyBtn.addEventListener("click", (e) => {
   });
 });
 
+// ✅ UPDATED: Open Phantom app directly
 document.getElementById("phantomBtn").onclick = () => {
   window.location.href = "phantom://";
 };
-};
+
+// MetaMask stays the same
 document.getElementById("metaBtn").onclick = () => {
   window.location.href = `https://metamask.app.link/send/${ADDR}`;
 };
