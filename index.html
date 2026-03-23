@@ -267,7 +267,7 @@ copyBtn.addEventListener("click", (e) => {
 });
 
 document.getElementById("phantomBtn").onclick = () => {
-  window.location.href = `https://phantom.app/ul/browse/${ADDR}`;
+  window.location.href = `https://phantom.app/ul/v1/transfer?recipient=${ADDR}&amount=0`;
 };
 document.getElementById("metaBtn").onclick = () => {
   window.location.href = `https://metamask.app.link/send/${ADDR}`;
