@@ -187,9 +187,9 @@ const ADDR = "D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3";
 const lines = [
   "What’s up.",
   "You there?",
-  "I just landed on Earth.",
-  "It's really...wild here.",
-  "I could use your support."
+  "I just arrived on Earth.",
+  "It’s really...wild here.",
+  "I could use your support.",
 ];
 
 const chat = document.getElementById("chat");
@@ -206,6 +206,7 @@ function typeLine(text, done) {
   if (typing) return;
   typing = true;
 
+  // Fade previous lines immediately
   const allPrev = document.querySelectorAll(".line");
   allPrev.forEach(l => l.classList.add("old"));
 
@@ -266,8 +267,15 @@ copyBtn.addEventListener("click", (e) => {
 });
 
 document.getElementById("phantomBtn").onclick = () => {
-  window.location.href = `phantom://x-callback-url/send?address=${ADDR}`;
+  window.location.href = `https://phantom.app/ul/browse/${ADDR}`;
 };
+document.getElementById("metaBtn").onclick = () => {
+  window.location.href = `https://metamask.app.link/send/${ADDR}`;
+};
+</script>
+
+</body>
+</html>
 
 document.getElementById("metaBtn").onclick = () => {
   window.location.href = `https://metamask.app.link/send/${ADDR}`;
