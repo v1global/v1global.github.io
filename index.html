@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -160,7 +159,6 @@ body {
   transform:translateY(0);
 }
 </style>
-
 </head>
 
 <body>
@@ -187,9 +185,9 @@ body {
 const ADDR = "D2tHP8E4ckTr3hq7sJiM6aHsMHTj4BPFUECecs7hWmx3";
 
 const lines = [
-  "What's up.",
+  "What’s up.",
   "You there?",
-  "I just landed on Earth.",
+  "I just arrived on Earth.",
   "It's really...wild here.",
   "I could use your support.",
 ];
@@ -208,6 +206,7 @@ function typeLine(text, done) {
   if (typing) return;
   typing = true;
 
+  // Fade previous lines immediately
   const allPrev = document.querySelectorAll(".line");
   allPrev.forEach(l => l.classList.add("old"));
 
@@ -268,15 +267,8 @@ copyBtn.addEventListener("click", (e) => {
 });
 
 document.getElementById("phantomBtn").onclick = () => {
-  // phantom:// triggers the app directly via custom URL scheme
-  // if app isn't installed, fall back to phantom.app after 1.5s
-  const fallback = setTimeout(() => {
-    window.location.href = "https://phantom.app";
-  }, 1500);
-  window.addEventListener("blur", () => clearTimeout(fallback), { once: true });
-  window.location.href = "phantom://";
+  window.location.href = `https://phantom.app/ul/browse/${ADDR}`;
 };
-
 document.getElementById("metaBtn").onclick = () => {
   window.location.href = `https://metamask.app.link/send/${ADDR}`;
 };
