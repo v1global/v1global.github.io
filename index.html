@@ -265,12 +265,10 @@ copyBtn.addEventListener("click", (e) => {
   });
 });
 
-// ✅ UPDATED: Open Phantom app directly
 document.getElementById("phantomBtn").onclick = () => {
-  window.location.href = "phantom://";
+  window.location.href = `phantom://x-callback-url/send?address=${ADDR}`;
 };
 
-// MetaMask stays the same
 document.getElementById("metaBtn").onclick = () => {
   window.location.href = `https://metamask.app.link/send/${ADDR}`;
 };
